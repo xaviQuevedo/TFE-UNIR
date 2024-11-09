@@ -17,3 +17,20 @@
 - **Accesibilidad**: El sistema debe ser fácil de acceder para diferentes niveles de habilidades tecnológicas.
 - **Escalabilidad**: El sistema debe estar preparado para soportar más usuarios y funciones.
 - **Rendimiento**: El sistema debe responder de manera rápida por cada acción que se realice.
+
+## Casos de Uso y Requisitos Relacionados
+
+| ID   | Nombre                                   | Requisito Relacionado |
+|------|------------------------------------------|------------------------|
+| CU1  | Registrar usuarios                       | RF1                   |
+| CU2  | Ingreso al sistema                       | RF2                   |
+| CU3  | Selección de paciente y cuestionarios    | RF3                   |
+| CU4  | Rellenar cuestionario                    | RF4                   |
+| CU5  | Guardar respuestas de cuestionario       | RF5                   |
+| CU6  | Retroalimentación visual de progreso     | RF6                   |
+| CU7  | Mostrar pacientes y cuestionarios completos | RF7               |
+| CU8  | Generar gráficos y reportes de progreso  | RF8                   |
+| CU9  | Registrar recomendaciones                | RF9                   |
+| CU10 | Generar historia clínica                 | RF10                  |
+| CU11 | Cambiar contraseña                       | RF11                  |
+
