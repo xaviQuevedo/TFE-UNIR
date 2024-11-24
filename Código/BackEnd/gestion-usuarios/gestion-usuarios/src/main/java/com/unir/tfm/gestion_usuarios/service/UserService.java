@@ -12,4 +12,6 @@ public interface UserService {
 
     boolean validatePassword(String rawPassword, String encodedPassword);
 
+    boolean existById(Long userId);
+
 }

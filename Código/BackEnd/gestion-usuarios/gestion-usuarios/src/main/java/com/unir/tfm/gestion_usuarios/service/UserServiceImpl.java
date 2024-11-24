@@ -41,4 +41,12 @@ public class UserServiceImpl implements UserService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
+    @Override
+    public boolean existById(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("el ID no puede ser nulo");
+        }
+        return userRepository.existsById(userId);
+    }
+
 }

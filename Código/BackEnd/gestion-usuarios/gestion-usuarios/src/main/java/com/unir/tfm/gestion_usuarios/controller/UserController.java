@@ -33,4 +33,9 @@ public class UserController {
         }
         return ResponseEntity.ok(jwtUtil.generateToken(user.getEmail(), user.getRole()));
     }
+
+    @PostMapping("/{id}/exist")
+    public ResponseEntity<Boolean> userExists(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.existById(id));
+    }
 }
