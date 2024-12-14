@@ -1,0 +1,27 @@
+package com.unir.tfm.gestion_fisioterapeutas.service;
+
+import java.util.List;
+
+import com.unir.tfm.gestion_fisioterapeutas.model.Assignment;
+import com.unir.tfm.gestion_fisioterapeutas.model.User;
+
+public interface AssignmentService {
+    Assignment assignPatientToPhysiotherapist(Long patientId, Long physiotherapistId);
+
+    List<Assignment> getAssignmentsByPhysiotherapist(Long physiotherapistId);
+
+    boolean isUserValid(Long userId, String expectedRole);
+
+    List<Assignment> getAssignedPatients(Long physiotherapistId);
+
+    boolean existsAssignment(Long patientId, Long physiotherapistId);
+
+
+
+    List<User> getPatients();
+
+    List<User> getPhysiotherapists();
+    void ensureAllPhysiotherapistsHavePatients();
+
+
+}

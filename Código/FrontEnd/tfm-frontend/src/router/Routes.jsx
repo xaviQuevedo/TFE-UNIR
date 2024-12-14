@@ -1,0 +1,32 @@
+import React from "react";
+import { BrowserRouter as Router, Route, Routes as ReactRoutes } from "react-router-dom";
+
+import Home from "../views/Home";
+import Login from "../views/Login";
+import AdminDashboard from "../views/AdminDashboard";
+import CreateUser from "../components/admin/RegisterForm";
+import UpdateUser from "../components/admin/UserTable";
+import AssignPatients from "../components/admin/ListPhysiotherapistForm";
+//import Register from "../views/Register";
+//import Questionnaires from "../views/Questionnaires";
+//import Users from "../views/Users";
+
+const Routes = () => {
+  return (
+    <Router>
+      <ReactRoutes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/create-user" element={<CreateUser />} />
+        <Route path="/admin/update-user" element={<UpdateUser />} />
+        <Route path="/admin/assign-patients" element={<AssignPatients />} />
+        {/*<Route path="/register" element={<Register />} />
+        <Route path="/questionnaires" element={<Questionnaires />} />
+        <Route path="/users" element={<Users />} /> */}
+      </ReactRoutes>
+    </Router>
+  );
+};
+
+export default Routes;

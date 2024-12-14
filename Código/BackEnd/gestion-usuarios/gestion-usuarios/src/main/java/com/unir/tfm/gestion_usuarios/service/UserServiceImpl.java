@@ -1,5 +1,6 @@
 package com.unir.tfm.gestion_usuarios.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+    @Override
     public boolean validatePassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
@@ -47,6 +52,32 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("el ID no puede ser nulo");
         }
         return userRepository.existsById(userId);
+    }
+    
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User updateUser(Long id, RegisterUserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setEmail(request.getEmail());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("Usuario no encontrado" + id);
+        }
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<User> getUsersByRole(String role) {
+        return userRepository.findByRole(role);
     }
 
 }
