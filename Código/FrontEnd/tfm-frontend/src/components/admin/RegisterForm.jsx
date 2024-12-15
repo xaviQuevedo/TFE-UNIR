@@ -35,7 +35,7 @@ const RegisterForm = () => {
                 >
                     <option value="admin">Administrador</option>
                     <option value="patient">Paciente</option>
-                    <option value= "physiotherapy">Fisioterapeuta</option>
+                    <option value= "physiotherapist">Fisioterapeuta</option>
                 </select>
                 <button type="submit" disabled={loading}>
                     {loading ? "Registering..." : "Register"}

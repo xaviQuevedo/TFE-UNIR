@@ -45,12 +45,19 @@ public class UsersFacade {
         }
     }
 
-    public List<User> getUsersByRole(String role) {
+    // Obtener usuarios por su rol, pasando también el token para autenticación
+    public List<User> getUsersByRole(String role, String token) {
         try {
             String url = String.format(getUsersByRoleUrl, role);
             log.info("Fetching users with role '{}'. URL: {}", role, url);
 
-            User[] users = restTemplate.getForObject(url, User[].class);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + token);
+            HttpEntity<?> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<User[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, User[].class);
+            User[] users = response.getBody();
+
             if (users != null) {
                 log.info("Found {} users with role '{}'", users.length, role);
                 return Arrays.asList(users);

@@ -1,42 +1,64 @@
+/* Estilo general del contenedor */
 .home-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100vh;
-  background-color: #f0f0f0;
-  padding: 20px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe); /* Fondo degradado */
+  font-family: 'Arial', sans-serif;
 }
 
-.home-container h1 {
+/* Contenido principal */
+.home-content {
+  text-align: center;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+}
+
+/* Título principal */
+.home-title {
   font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 1rem;
 }
 
-.home-container p {
+/* Descripción */
+.home-description {
   font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 20px;
-  text-align: center;
+  color: #555555;
+  margin-bottom: 0.5rem;
 }
 
-.home-container nav ul {
-  list-style: none;
-  padding: 0;
+/* Texto secundario */
+.home-subtext {
+  font-size: 1rem;
+  color: #777777;
+  margin-bottom: 2rem;
 }
 
-.home-container nav ul li {
-  margin: 10px 0;
-}
-
-.home-container nav ul li a {
+/* Botón de iniciar sesión */
+.home-button {
+  display: inline-block;
   text-decoration: none;
-  color: #007bff;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  color: #ffffff;
+  background: #4facfe;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.home-container nav ul li a:hover {
-  text-decoration: underline;
+/* Efectos del botón */
+.home-button:hover {
+  background: #00c3fe;
+  transform: translateY(-3px);
+}
+.home-button:active {
+  transform: translateY(0);
 }

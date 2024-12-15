@@ -1,0 +1,74 @@
+/* Estilo general del contenedor */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #6a11cb, #2575fc); /* Fondo moderno con degradado */
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Tarjeta de login */
+.login-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); /* Sombra moderna */
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+/* Título principal */
+.login-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 1rem;
+}
+
+/* Descripción */
+.login-description {
+    font-size: 1.1rem;
+    color: #555555;
+    margin-bottom: 2rem;
+}
+
+/* Botón de formulario (estilo general para reutilización) */
+.login-card button {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    color: #fff;
+    background: #2575fc;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Efectos del botón */
+.login-card button:hover {
+    background: #1b5fd6;
+    transform: translateY(-2px);
+}
+
+.login-card button:active {
+    transform: translateY(0);
+}
+
+/* Formulario responsivo */
+.login-card input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.login-card input:focus {
+    border-color: #2575fc;
+    outline: none;
+    box-shadow: 0 0 5px rgba(37, 117, 252, 0.3);
+}

@@ -5,11 +5,14 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unir.tfm.gestion_fisioterapeutas.model.AssignRequest;
 import com.unir.tfm.gestion_fisioterapeutas.model.Assignment;
+import com.unir.tfm.gestion_fisioterapeutas.model.User;
 import com.unir.tfm.gestion_fisioterapeutas.service.AssignmentService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,29 +26,20 @@ public class AssignmentController {
 
     // EndPoint para asignar un paciente a un fisioterapeuta
     @PostMapping("/assign")
-    public ResponseEntity<?> assignPatientToPhysiotherapist(
-        @RequestParam Long patientId,
-        @RequestParam Long physiotherapistId) {
+    public ResponseEntity<?> assignPatientToPhysiotherapist(@RequestBody AssignRequest request) {
+        try {
+            List<Assignment> assignments = assignmentService.assignPatientsToPhysiotherapist(
+                    request.getPatientIds(),
+                    request.getPhysiotherapistId());
 
-    System.out.println("Entrando a /assign endpoint");
-
-    try {
-        // Validar si los IDs son válidos
-        if (!assignmentService.isUserValid(patientId, "patient") || !assignmentService.isUserValid(physiotherapistId, "physiotherapist")) {
-            return ResponseEntity.badRequest().body("Invalid patient or physiotherapist ID");
+            return ResponseEntity.ok("Patients assigned successfully to physiotherapist. Assignments: " + assignments);
+        } catch (IllegalArgumentException e) {
+            // Manejar el error de asignación ya existente
+            return ResponseEntity.status(409).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An unexpected error occurred: " + e.getMessage());
         }
-
-        Assignment assignment = assignmentService.assignPatientToPhysiotherapist(patientId, physiotherapistId);
-        return ResponseEntity.ok(assignment);
-    } catch (IllegalArgumentException e) {
-        // Responder con un mensaje de error en caso de conflictos como asignación duplicada
-        return ResponseEntity.badRequest().body(e.getMessage());
-    } catch (Exception e) {
-        // Manejar errores no previstos
-        return ResponseEntity.status(500).body("An unexpected error occurred: " + e.getMessage());
     }
-}
-
 
     // EndPoint para obtener los pacientes asignados a un fisioterapeuta
     @GetMapping("/pysiotherapist/{physiotherapistId}")
@@ -62,15 +56,18 @@ public class AssignmentController {
         return ResponseEntity.ok(exists);
     }
 
-
+    //
     @GetMapping("/patients")
     public ResponseEntity<List<?>> getPatients() {
-        return ResponseEntity.ok(assignmentService.getPatients());
+        List<?> patients = assignmentService.getPatients();
+        System.out.println("Patients: " + patients);
+        return ResponseEntity.ok(patients);
     }
 
     @GetMapping("/physiotherapists")
     public ResponseEntity<List<?>> getPhysiotherapists() {
-        return ResponseEntity.ok(assignmentService.getPhysiotherapists());
+        List<?> physiotherapists = assignmentService.getPhysiotherapists();
+        return ResponseEntity.ok(physiotherapists);
     }
 
     @GetMapping("/checkPhysiotherapists")
@@ -83,5 +80,14 @@ public class AssignmentController {
         }
     }
 
+    @GetMapping("/unassigned-patients")
+    public ResponseEntity<List<User>> getUnassignedPatients(@RequestParam Long physiotherapistId) {
+        try {
+            List<User> unassignedPatients = assignmentService.getUnassignedPatients(physiotherapistId);
+            return ResponseEntity.ok(unassignedPatients);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 
 }

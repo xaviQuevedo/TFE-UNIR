@@ -6,7 +6,7 @@ import Login from "../views/Login";
 import AdminDashboard from "../views/AdminDashboard";
 import CreateUser from "../components/admin/RegisterForm";
 import UpdateUser from "../components/admin/UserTable";
-import AssignPatients from "../components/admin/ListPhysiotherapistForm";
+import AssignPatients from "../components/admin/AssignPatients";
 //import Register from "../views/Register";
 //import Questionnaires from "../views/Questionnaires";
 //import Users from "../views/Users";
@@ -17,7 +17,7 @@ const Routes = () => {
       <ReactRoutes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/create-user" element={<CreateUser />} />
         <Route path="/admin/update-user" element={<UpdateUser />} />
         <Route path="/admin/assign-patients" element={<AssignPatients />} />

@@ -6,13 +6,16 @@ import com.unir.tfm.gestion_fisioterapeutas.model.Assignment;
 import com.unir.tfm.gestion_fisioterapeutas.model.User;
 
 public interface AssignmentService {
-    Assignment assignPatientToPhysiotherapist(Long patientId, Long physiotherapistId);
+    List<Assignment> assignPatientsToPhysiotherapist(List<Long> patientIds, Long physiotherapistId);
 
-    List<Assignment> getAssignmentsByPhysiotherapist(Long physiotherapistId);
 
     boolean isUserValid(Long userId, String expectedRole);
 
     List<Assignment> getAssignedPatients(Long physiotherapistId);
+    List<Assignment> getAssignmentsByPhysiotherapist(Long physiotherapistId);
+    List<User> getUnassignedPatients(Long physiotherapistId);
+
+
 
     boolean existsAssignment(Long patientId, Long physiotherapistId);
 
@@ -21,6 +24,7 @@ public interface AssignmentService {
     List<User> getPatients();
 
     List<User> getPhysiotherapists();
+
     void ensureAllPhysiotherapistsHavePatients();
 
 

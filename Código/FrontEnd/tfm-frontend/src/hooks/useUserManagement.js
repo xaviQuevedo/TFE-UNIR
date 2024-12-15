@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import createApiInstance from "../api/apiConfig";
+
+import { userService } from "../api/apiConfig";
 
 const useUserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const api = createApiInstance("gestionUsuarios");
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -14,7 +14,7 @@ const useUserManagement = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await api.get("/users/admin/all", {
+      const response = await userService.get("/users/admin/all", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -24,12 +24,12 @@ const useUserManagement = () => {
       setError(error);
     }
     setLoading(false);
-  }, [api]);
+  }, []);
 
   const deleteUser = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await api.delete(`/users/${id}`, {
+      await userService.delete(`/users/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -44,7 +44,7 @@ const useUserManagement = () => {
   const updateUser = async (id, updatedData) => {
     try {
       const token = localStorage.getItem("token");
-      await api.put(`/users/${id}`, updatedData, {
+      await userService.put(`/users/${id}`, updatedData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

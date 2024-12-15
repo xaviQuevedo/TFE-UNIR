@@ -7,6 +7,7 @@ import com.unir.tfm.gestion_fisioterapeutas.repository.AssignmentRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,18 +30,19 @@ public class AssignmentServiceImpl implements AssignmentService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
-            //System.out.println("El contexto de seguridad no contiene autenticación.");
+            // System.out.println("El contexto de seguridad no contiene autenticación.");
             throw new IllegalStateException("El contexto de seguridad no contiene autenticación.");
         }
 
-        //System.out.println("Tipo de autenticación: " + authentication.getClass().getName());
-        //System.out.println("Detalles de autenticación: " + authentication);
+        // System.out.println("Tipo de autenticación: " +
+        // authentication.getClass().getName());
+        // System.out.println("Detalles de autenticación: " + authentication);
 
         if (authentication instanceof UsernamePasswordAuthenticationToken authToken) {
             Object details = authToken.getDetails();
 
             if (details instanceof String token) {
-                //System.out.println("Token encontrado en el contexto de seguridad: " + token);
+                // System.out.println("Token encontrado en el contexto de seguridad: " + token);
                 return token;
             } else {
                 System.out.println("Los detalles de autenticación no contienen el token esperado.");
@@ -52,40 +54,51 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public Assignment assignPatientToPhysiotherapist(Long patientId, Long physiotherapistId) {
-        System.out.println("Entrando a assignPatientToPhysiotherapist");
+    public List<Assignment> assignPatientsToPhysiotherapist(List<Long> patientIds, Long physiotherapistId) {
+        System.out.println("Entrando a assignPatientsToPhysiotherapist");
+
         // Obtener el token JWT del contexto de seguridad
         String token = obtenerTokenActual();
-        System.out.println("Tokennn: " + token);
         if (token == null) {
             throw new IllegalArgumentException("Token no encontrado o inválido");
         }
+        System.out.println("Token: " + token);
 
-        System.out.println("Tokennn: " + token);
-
-        // Verificar si los usuarios son válidos
-        User patient = usersFacade.getUser(patientId, token);
-        System.out.println("Roll paco: " + patient.getRole());
+        // Obtener los detalles del fisioterapeuta
         User physiotherapist = usersFacade.getUser(physiotherapistId, token);
-        System.out.println("Roll fisio: " + physiotherapist.getRole());
-
-
-        // Comprobar si los IDS corresponden a usuarios válidos
-        if (patient == null || !patient.getRole().equals("patient") ||
-                physiotherapist == null || !physiotherapist.getRole().equals("physiotherapist")) {
-            throw new IllegalArgumentException("Invalid user ID or role");
+        if (physiotherapist == null || !"physiotherapist".equals(physiotherapist.getRole())) {
+            throw new IllegalArgumentException(
+                    "El usuario con ID " + physiotherapistId + " no es un fisioterapeuta válido.");
         }
 
-        // Validar si ya existe una asignación
-        if (assignmentRepository.existsByPatientIdAndPhysiotherapistId(patientId, physiotherapistId)) {
-            throw new IllegalArgumentException("Assignment already exists");
+        // Lista para almacenar las asignaciones realizadas
+        List<Assignment> assignments = new ArrayList<>();
+
+        for (Long patientId : patientIds) {
+            // Obtener los detalles del paciente
+            User patient = usersFacade.getUser(patientId, token);
+            if (patient == null || !"patient".equals(patient.getRole())) {
+                throw new IllegalArgumentException("El usuario con ID " + patientId + " no es un paciente válido.");
+            }
+
+            // Verificar si ya existe una asignación para este paciente y fisioterapeuta
+            // usando el método existsAssignment
+            if (existsAssignment(patientId, physiotherapistId)) {
+                throw new IllegalArgumentException(
+                        "Ya existe una asignación entre el paciente con ID " + patientId +
+                                " y el fisioterapeuta con ID " + physiotherapistId);
+            }
+
+            // Crear y guardar la asignación
+            Assignment assignment = new Assignment();
+            assignment.setPhysiotherapistId(physiotherapistId);
+            assignment.setPatientId(patientId);
+
+            assignments.add(assignmentRepository.save(assignment));
         }
 
-        // crear y guardar la asignación
-        Assignment assignment = new Assignment();
-        assignment.setPhysiotherapistId(physiotherapistId);
-        assignment.setPatientId(patientId);
-        return assignmentRepository.save(assignment);
+        // Retornar todas las asignaciones realizadas
+        return assignments;
     }
 
     @Override
@@ -120,25 +133,45 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
+public List<User> getUnassignedPatients(Long physiotherapistId) {
+    String token = obtenerTokenActual(); // Obtén el token actual
+    List<User> allPatients = usersFacade.getUsersByRole("patient", token);
+
+    // Obtener los IDs de los pacientes ya asignados al fisioterapeuta
+    List<Long> assignedPatientIds = getAssignedPatients(physiotherapistId)
+        .stream()
+        .map(Assignment::getPatientId)
+        .toList(); // Convertimos a lista para facilidad
+
+    // Filtrar y devolver solo los pacientes que no están asignados
+    return allPatients.stream()
+        .filter(patient -> !assignedPatientIds.contains(patient.getUser_id()))
+        .toList();
+}
+
+
+    @Override
     public boolean existsAssignment(Long patientId, Long physiotherapistId) {
         return assignmentRepository.existsByPatientIdAndPhysiotherapistId(patientId, physiotherapistId);
     }
 
     @Override
     public List<User> getPatients() {
-        return usersFacade.getUsersByRole("patient");
+        String token = obtenerTokenActual();
+        return usersFacade.getUsersByRole("patient", token);
     }
 
     @Override
     public List<User> getPhysiotherapists() {
-        return usersFacade.getUsersByRole("physiotherapist");
+        String token = obtenerTokenActual();
+        return usersFacade.getUsersByRole("physiotherapist", token);
     }
 
     @Override
     public void ensureAllPhysiotherapistsHavePatients() {
         List<User> physiotherapists = getPhysiotherapists();
         physiotherapists.forEach(physiotherapist -> {
-            Long physiotherapistId = physiotherapist.getId();
+            Long physiotherapistId = physiotherapist.getUser_id();
             if (assignmentRepository.findByPhysiotherapistId(physiotherapistId).isEmpty()) {
                 throw new IllegalStateException(
                         String.format("Physiotherapist with ID %d has no assigned patients.", physiotherapistId));

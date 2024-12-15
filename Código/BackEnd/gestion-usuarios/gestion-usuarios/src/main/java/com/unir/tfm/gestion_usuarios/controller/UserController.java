@@ -93,6 +93,7 @@ public ResponseEntity<User> getUserById(@PathVariable Long id) {
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+        System.out.println("userr"+users);
         return ResponseEntity.ok(users);
     }
 

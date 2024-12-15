@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "../api/apiConfig";
+import { userService } from "../api/apiConfig";
 
 const useLogin = () => {
   const [status, setStatus] = useState("");
@@ -9,7 +9,7 @@ const useLogin = () => {
     setLoading(true);
     setStatus("");
     try {
-      const response = await api.post("/users/login", {
+      const response = await userService.post("/users/login", {
         email,
         password,
       });

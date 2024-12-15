@@ -57,7 +57,7 @@ const UserTable = () => {
                   >
                     <option value="admin">Administrador</option>
                     <option value="patient">Paciente</option>
-                    <option value="physiotherapy">Fisioterapeuta</option>
+                    <option value="physiotherapist">Fisioterapeuta</option>
                   </select>
                 </td>
                 <td>

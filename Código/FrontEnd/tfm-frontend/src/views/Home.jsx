@@ -5,15 +5,16 @@ import '../styles/Home.css';
 const Home = () => {
     return (
         <div className="home-container">
-            <h1>Bienvenido al sistema para registrar avances en fisioterapia</h1>
-            <p>Por favor, seleccione una opción:</p>
-            <nav>
-                <ul> 
-                <li><Link to="/login">Iniciar sesión</Link></li>
-                <li><Link to="/register">Registrarse</Link></li>
-
-                </ul>
-            </nav>
+            <div className="home-content">
+                <h1 className="home-title">Bienvenido</h1>
+                <p className="home-description">Sistema para registrar avances en fisioterapia</p>
+                <p className="home-subtext">Por favor, inicie sesión para continuar</p>
+                <nav>
+                    <Link to="/login" className="home-button">
+                        Iniciar Sesión
+                    </Link>
+                </nav>
+            </div>
         </div>
     );
 };

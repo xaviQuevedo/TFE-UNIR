@@ -1,46 +1,82 @@
-/* Archivo: Login.css */
+/* Contenedor principal */
 .login-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  font-family: 'Roboto', sans-serif;
 }
 
+/* Tarjeta de login */
+.login-card {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+/* Título */
+.login-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 1.5rem;
+}
+
+/* Formulario */
 .login-form {
-  background: #fff;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Campos de entrada */
+.login-input {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.login-form h1 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  color: #333;
+.login-input:focus {
+  border-color: #2575fc;
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.3);
 }
 
-.login-form input {
+/* Botón */
+.login-button {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.login-form button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  border: none;
-  border-radius: 4px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: bold;
   color: #fff;
-  font-size: 16px;
+  background: #2575fc;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.login-form button:hover {
-  background-color: #0056b3;
+.login-button:hover {
+  background: #1b5fd6;
+  transform: translateY(-2px);
+}
+
+.login-button:disabled {
+  background: #a5c8fc;
+  cursor: not-allowed;
+}
+
+/* Mensaje de estado */
+.login-status {
+  margin-top: 1rem;
+  color: #ff4d4d;
+  font-size: 0.9rem;
 }

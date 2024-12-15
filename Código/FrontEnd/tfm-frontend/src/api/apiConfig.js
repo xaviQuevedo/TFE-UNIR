@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const BASE_URLS = {
-  gestionUsuarios: "http://localhost:8080",
-  gestionFisioterapeutas: "http://localhost:8081",
+  gestionUsuarios: "http://localhost:8762/ms-gestion-usuarios",
+  gestionFisioterapeutas: "http://localhost:8762/ms-gestion-fisioterapeutas",
 };
 
 const createApiInstance = (service) => {
@@ -17,4 +17,6 @@ const createApiInstance = (service) => {
   });
 };
 
+export const userService = createApiInstance("gestionUsuarios");
+export const physiotherapistService = createApiInstance("gestionFisioterapeutas");
 export default createApiInstance;

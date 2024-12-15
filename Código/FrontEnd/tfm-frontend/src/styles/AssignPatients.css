@@ -1,0 +1,29 @@
+.assign-patients-container {
+    padding: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .patients-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .patients-list li {
+    margin: 5px 0;
+  }
+  
+  .assign-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .assign-button:hover {
+    background-color: #0056b3;
+  }
+  
