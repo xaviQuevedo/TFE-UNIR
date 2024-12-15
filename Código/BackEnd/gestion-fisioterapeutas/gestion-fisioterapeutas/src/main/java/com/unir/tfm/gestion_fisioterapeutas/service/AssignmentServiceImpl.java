@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -133,22 +134,21 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-public List<User> getUnassignedPatients(Long physiotherapistId) {
-    String token = obtenerTokenActual(); // Obtén el token actual
-    List<User> allPatients = usersFacade.getUsersByRole("patient", token);
+    public List<User> getUnassignedPatients(Long physiotherapistId) {
+        // Obtener todos los pacientes desde el microservicio de usuarios
+        List<User> allPatients = getPatients(); // Reutilizamos el método ya existente
+        // Obtener los IDs de pacientes ya asignados a cualquier fisioterapeuta
+        List<Long> assignedPatientIds = assignmentRepository.findAll().stream()
+                .map(Assignment::getPatientId)
+                .distinct()
+                .collect(Collectors.toList());
 
-    // Obtener los IDs de los pacientes ya asignados al fisioterapeuta
-    List<Long> assignedPatientIds = getAssignedPatients(physiotherapistId)
-        .stream()
-        .map(Assignment::getPatientId)
-        .toList(); // Convertimos a lista para facilidad
-
-    // Filtrar y devolver solo los pacientes que no están asignados
-    return allPatients.stream()
-        .filter(patient -> !assignedPatientIds.contains(patient.getUser_id()))
-        .toList();
-}
-
+        // Filtrar pacientes no asignados
+        return allPatients.stream()
+                .filter(patient -> !assignedPatientIds.contains(patient.getUser_id())) // Asegúrate de usar el getter
+                                                                                       // correcto
+                .collect(Collectors.toList());
+    }
 
     @Override
     public boolean existsAssignment(Long patientId, Long physiotherapistId) {

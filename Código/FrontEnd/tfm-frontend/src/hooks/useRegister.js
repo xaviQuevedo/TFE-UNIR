@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "../api/apiConfig";
+import { userService } from "../api/apiConfig";
 
 const useRegister = () => {
   const [status, setStatus] = useState("");
@@ -11,7 +11,7 @@ const useRegister = () => {
     try {
       const token = localStorage.getItem("token");
 
-      await api.post(
+      await userService.post(
         "/users/admin/register",
         { email, password, role },
         {
