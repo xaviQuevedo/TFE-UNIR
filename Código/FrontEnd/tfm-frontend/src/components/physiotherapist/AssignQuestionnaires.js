@@ -3,21 +3,37 @@ import useAssignQuestionnaires from "../../hooks/useAssignQuestionnaires";
 import "../../styles/AssignQuestionnaires.css";
 
 const AssignQuestionnaires = () => {
-    const {
-        patients,
-/*         questionnaires,
- */        selectedPatient,
-        setSelectedPatient,
-        /* selectedQuestionnaires,
-        setSelectedQuestionnaires, */
-        handleAssign,
-        loading,
-        error,
-        success, 
-    } = useAssignQuestionnaires();
-    
-    return ( 
-        <div className="assign-questionnaires-container">
+  const {
+    patients,
+    questionnaires,
+    selectedPatient,
+    setSelectedPatient,
+    selectedQuestionnaires,
+    setSelectedQuestionnaires,
+    handleAssign,
+    loading,
+    error,
+    success,
+  } = useAssignQuestionnaires();
+
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    const questionnaireId = Number(value); // Convertir a número
+
+    if (checked) {
+      setSelectedQuestionnaires([...selectedQuestionnaires, questionnaireId]);
+    } else {
+      setSelectedQuestionnaires(
+        selectedQuestionnaires.filter((id) => id !== questionnaireId)
+      );
+    }
+  };
+
+  // Condición para deshabilitar el botón
+  const isButtonDisabled = !selectedPatient || selectedQuestionnaires.length === 0;
+
+  return (
+    <div className="assign-questionnaires-container">
       <h2>Asignar Cuestionarios</h2>
       {error && <p className="error-message">{error}</p>}
       {success && <p className="success-message">{success}</p>}
@@ -40,7 +56,7 @@ const AssignQuestionnaires = () => {
               ))}
             </select>
           </div>
-          {/* <div className="select-questionnaires">
+          <div className="select-questionnaires">
             <h3>Selecciona Cuestionarios</h3>
             <ul>
               {questionnaires.map((questionnaire) => (
@@ -50,30 +66,25 @@ const AssignQuestionnaires = () => {
                       type="checkbox"
                       value={questionnaire.id}
                       checked={selectedQuestionnaires.includes(questionnaire.id)}
-                      onChange={(e) => {
-                        const { value, checked } = e.target;
-                        if (checked) {
-                          setSelectedQuestionnaires([...selectedQuestionnaires, value]);
-                        } else {
-                          setSelectedQuestionnaires(
-                            selectedQuestionnaires.filter((id) => id !== value)
-                          );
-                        }
-                      }}
+                      onChange={handleCheckboxChange}
                     />
                     {questionnaire.title}
                   </label>
                 </li>
               ))}
             </ul>
-          </div> */}
-          <button onClick={handleAssign} className="assign-button" disabled={loading}>
+          </div>
+          <button
+            onClick={handleAssign}
+            className="assign-button"
+            disabled={isButtonDisabled || loading} // Condición para deshabilitar
+          >
             {loading ? "Asignando..." : "Asignar Cuestionarios"}
           </button>
         </>
       )}
     </div>
-    );
+  );
 };
 
 export default AssignQuestionnaires;

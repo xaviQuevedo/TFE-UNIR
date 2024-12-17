@@ -47,12 +47,6 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Dependencia de H2 para la base de datos en memoria -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
 		<!-- Dependencia de Spring Boot DevTools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

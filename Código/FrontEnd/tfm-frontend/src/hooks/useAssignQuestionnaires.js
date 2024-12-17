@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { physiotherapistService } from "../api/apiConfig";
+import { questionnaireService } from "../api/apiConfig";
 
 const useAssignQuestionnaires = () => {
     const [patients, setPatients] = useState([]);
-/*     const [questionnaires, setQuestionnaires] = useState([]);
- */    const [selectedPatient, setSelectedPatient] = useState("");
-/*     const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
- */    const [loading, setLoading] = useState(false);
+    const [questionnaires, setQuestionnaires] = useState([]);
+     const [selectedPatient, setSelectedPatient] = useState("");
+    const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState("");
 
@@ -24,20 +25,20 @@ const useAssignQuestionnaires = () => {
                 }
 
                 // Obtener los pacientes asignados al fisioterapeuta
-                const [patientsResponse, /* questionnairesResponse */] = await Promise.all([
+                const [patientsResponse, questionnairesResponse] = await Promise.all([
                     physiotherapistService.get(`/assignments/pysiotherapist/${physiotherapistId}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
-                    /* physiotherapistService.get("/questionnaires", {
+                    questionnaireService.get("/questionnaires", {
                         headers: { Authorization: `Bearer ${token}` },
-                    }), */
+                    }), 
                 ]);
 
                 console.log("patientsResponse: ", JSON.stringify(patientsResponse.data, null, 2));
 
                 setPatients(patientsResponse.data);
-/*                 setQuestionnaires(questionnairesResponse.data);
- */                setLoading(false);
+                setQuestionnaires(questionnairesResponse.data);
+                setLoading(false);
             } catch (err) {
                 setError(err.response?.data?.message || "Error al cargar los datos.");
                 setLoading(false);
@@ -48,7 +49,7 @@ const useAssignQuestionnaires = () => {
     }, []);
 
     const handleAssign = async () => {
-        if (!selectedPatient /* || selectedQuestionnaires.length */ === 0) {
+        if (!selectedPatient  || selectedQuestionnaires.length  === 0) {
             setError("Selecciona un paciente y al menos un cuestionario.");
             return;
         }
@@ -60,8 +61,8 @@ const useAssignQuestionnaires = () => {
                 "/assignments",
                 {
                     patientId: selectedPatient,
-/*                     questionnaireIds: selectedQuestionnaires,
- */                },
+                     questionnaireIds: selectedQuestionnaires,
+                 },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -69,8 +70,8 @@ const useAssignQuestionnaires = () => {
 
             setSuccess("Cuestionarios asignados correctamente.");
             setSelectedPatient("");
-/*             setSelectedQuestionnaires([]);
- */            setLoading(false);
+            setSelectedQuestionnaires([]);
+            setLoading(false);
         } catch (err) {
             setError(err.response?.data?.message || "Error al asignar cuestionarios.");
             setLoading(false);
@@ -79,11 +80,11 @@ const useAssignQuestionnaires = () => {
 
     return {
         patients,
-/*         questionnaires,
- */        selectedPatient,
+        questionnaires,
+        selectedPatient,
         setSelectedPatient,
-        /* selectedQuestionnaires,
-        setSelectedQuestionnaires, */
+        selectedQuestionnaires,
+        setSelectedQuestionnaires, 
         handleAssign,
         error,
         loading,

@@ -1,5 +1,7 @@
 package com.unir.tfm.gestion_cuestionarios.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +38,11 @@ public class QuestionnaireController {
     @GetMapping("/{questionnaireId}")
     public ResponseEntity<QuestionnaireResponseDto> getQuestionnaire(@PathVariable Long questionnaireId) {
         return ResponseEntity.ok(questionnaireService.getQuestionnaire(questionnaireId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<QuestionnaireResponseDto>> getAllQuestionnaires() {
+        return ResponseEntity.ok(questionnaireService.getAllQuestionnaires());
     }
 
 }

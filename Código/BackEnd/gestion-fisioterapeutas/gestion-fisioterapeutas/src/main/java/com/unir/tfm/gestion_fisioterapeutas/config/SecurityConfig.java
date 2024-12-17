@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/assignments/**").hasAnyRole("admin", "physiotherapist")
-                        .anyRequest().authenticated());  // Especifica el orden del filtro
+                        .anyRequest().authenticated()); // Especifica el orden del filtro
         return http.build();
     }
 

@@ -1,6 +1,6 @@
 package com.unir.tfm.gestion_cuestionarios.model.entity;
 
-import java.util.List;
+//import java.util.List;
 
 
 import jakarta.persistence.*;
@@ -27,9 +27,9 @@ public class Questionnaire {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "questionnaire", cascade = CascadeType.ALL)
+    /*@OneToMany(mappedBy = "questionnaire", cascade = CascadeType.ALL)
     private List<Question> questions;
-   /*  @OneToMany(mappedBy = "questionnaire", cascade = CascadeType.ALL)
+     @OneToMany(mappedBy = "questionnaire", cascade = CascadeType.ALL)
     private List<PatientQuestionnaire> patientQuestionnaires; */
 
 }

@@ -3,6 +3,7 @@ import axios from "axios";
 const BASE_URLS = {
   gestionUsuarios: "http://localhost:8762/ms-gestion-usuarios",
   gestionFisioterapeutas: "http://localhost:8762/ms-gestion-fisioterapeutas",
+  gestionCuestionarios: "http://localhost:8762/ms-gestion-cuestionarios",
 };
 
 const createApiInstance = (service) => {
@@ -19,4 +20,5 @@ const createApiInstance = (service) => {
 
 export const userService = createApiInstance("gestionUsuarios");
 export const physiotherapistService = createApiInstance("gestionFisioterapeutas");
+export const questionnaireService = createApiInstance("gestionCuestionarios");
 export default createApiInstance;

@@ -31,13 +31,13 @@ public class UsersFacade {
         try {
             String url = String.format(getUserByIdUrl, userId);
             log.info("Fetching user with ID {}. URL: {}. Token: {}", userId, url, token);
-    
+
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + token);
             HttpEntity<?> entity = new HttpEntity<>(headers);
-    
+
             ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
-    
+
             return response.getBody();
         } catch (Exception e) {
             log.error("Error fetching user with ID {}: {}", userId, e.getMessage());

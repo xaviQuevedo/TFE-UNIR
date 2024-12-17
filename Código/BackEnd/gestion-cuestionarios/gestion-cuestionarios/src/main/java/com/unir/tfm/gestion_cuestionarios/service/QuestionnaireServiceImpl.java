@@ -22,79 +22,96 @@ import com.unir.tfm.gestion_cuestionarios.model.response.QuestionnaireResponseDt
 @Service
 public class QuestionnaireServiceImpl implements QuestionnaireService {
 
-    @Autowired
-    private QuestionnaireRepository questionnaireRepository;
+        @Autowired
+        private QuestionnaireRepository questionnaireRepository;
 
-    @Autowired
-    private PatientQuestionnaireRepository patientQuestionnaireRepository;
+        @Autowired
+        private PatientQuestionnaireRepository patientQuestionnaireRepository;
 
-    @Autowired
-    private QuestionnaireResponseRepository questionnaireResponseRepository;
+        @Autowired
+        private QuestionnaireResponseRepository questionnaireResponseRepository;
 
-    @Autowired
-    private QuestionRepository questionRepository;
+        @Autowired
+        private QuestionRepository questionRepository;
 
-    @Autowired
-    private UserClient userClient;
+        @Autowired
+        private UserClient userClient;
 
-    @Override
-    public void assignQuestionnaire(AssignQuestionnaireRequest request) {
-         // Verificar que el usuario existe
-         if (!userClient.userExists(request.getUserId())) {
-             throw new RuntimeException("User not found");
-         }
+        @Override
+        public void assignQuestionnaire(AssignQuestionnaireRequest request) {
+                // Verificar que el usuario existe
+                if (!userClient.userExists(request.getUserId())) {
+                        throw new RuntimeException("User not found");
+                }
 
-        // Buscar el cuestionario por su ID
-        Questionnaire questionnaire = questionnaireRepository.findById(request.getQuestionnaireId())
-                .orElseThrow(() -> new RuntimeException("Questionnaire not found"));
+                // Buscar el cuestionario por su ID
+                Questionnaire questionnaire = questionnaireRepository.findById(request.getQuestionnaireId())
+                                .orElseThrow(() -> new RuntimeException("Questionnaire not found"));
 
-        // Crear y guardar la relación con el paciente
-        PatientQuestionnaire patientQuestionnaire = new PatientQuestionnaire();
-        patientQuestionnaire.setUserId(request.getUserId());
-        patientQuestionnaire.setQuestionnaire(questionnaire);
-        patientQuestionnaire.setStatus("pending");
+                // Crear y guardar la relación con el paciente
+                PatientQuestionnaire patientQuestionnaire = new PatientQuestionnaire();
+                patientQuestionnaire.setUserId(request.getUserId());
+                patientQuestionnaire.setQuestionnaire(questionnaire);
+                patientQuestionnaire.setStatus("pending");
 
-        patientQuestionnaireRepository.save(patientQuestionnaire);
-    }
+                patientQuestionnaireRepository.save(patientQuestionnaire);
+        }
 
-    @Override
-    public void submitAnswer(SubmitAnswerRequest request) {
-        // Implementar la lógica para guardar respuestas
+        @Override
+        public void submitAnswer(SubmitAnswerRequest request) {
+                // Implementar la lógica para guardar respuestas
 
-        // Relacion de cuestionario con paciente
-        PatientQuestionnaire patientQuestionnaire = patientQuestionnaireRepository.findById(request.getPatientQuestionnaireId())
-                .orElseThrow(() -> new RuntimeException("Patient questionnaire not found"));
+                // Relacion de cuestionario con paciente
+                PatientQuestionnaire patientQuestionnaire = patientQuestionnaireRepository
+                                .findById(request.getPatientQuestionnaireId())
+                                .orElseThrow(() -> new RuntimeException("Patient questionnaire not found"));
 
-        // Se crea la nueva respuesta
-        QuestionnaireResponse questionnaireResponse = new QuestionnaireResponse();
-        questionnaireResponse.setPatientQuestionnaire(patientQuestionnaire);
-        questionnaireResponse.setResponse(request.getResponse());
-        questionnaireResponse.setCompletedAt(request.getCompletedAt());
+                // Se crea la nueva respuesta
+                QuestionnaireResponse questionnaireResponse = new QuestionnaireResponse();
+                questionnaireResponse.setPatientQuestionnaire(patientQuestionnaire);
+                questionnaireResponse.setResponse(request.getResponse());
+                questionnaireResponse.setCompletedAt(request.getCompletedAt());
 
-        // Se guarda la respuesta
-        questionnaireResponseRepository.save(questionnaireResponse);
+                // Se guarda la respuesta
+                questionnaireResponseRepository.save(questionnaireResponse);
 
-    }
+        }
 
-    @Override
-public QuestionnaireResponseDto getQuestionnaire(Long questionnaireId) {
-    // Buscar el cuestionario
-    Questionnaire questionnaire = questionnaireRepository.findById(questionnaireId)
-            .orElseThrow(() -> new RuntimeException("Questionnaire not found"));
+        @Override
+        public QuestionnaireResponseDto getQuestionnaire(Long questionnaireId) {
+                // Buscar el cuestionario
+                Questionnaire questionnaire = questionnaireRepository.findById(questionnaireId)
+                                .orElseThrow(() -> new RuntimeException("Questionnaire not found"));
 
-    // Obtener las preguntas asociadas
-    List<QuestionResponseDto> questions = questionRepository.findByQuestionnaireId(questionnaireId).stream()
-            .map(q -> new QuestionResponseDto(q.getId(), q.getText(), q.getType(), q.getOptions()))
-            .collect(Collectors.toList()); // Asegúrate de usar Collectors.toList() si tu versión de Java es anterior a la 16
+                // Obtener las preguntas asociadas
+                List<QuestionResponseDto> questions = questionRepository.findByQuestionnaireId(questionnaireId).stream()
+                                .map(q -> new QuestionResponseDto(q.getId(), q.getText(), q.getType(), q.getOptions()))
+                                .collect(Collectors.toList()); // Asegúrate de usar Collectors.toList() si tu versión de
+                                                               // Java es anterior a la 16
 
-    // Crear y devolver el DTO del cuestionario
-    return new QuestionnaireResponseDto(
-            questionnaire.getId(),
-            questionnaire.getTitle(),
-            questionnaire.getDescription(),
-            questions
-    );
-}
+                // Crear y devolver el DTO del cuestionario
+                return new QuestionnaireResponseDto(
+                                questionnaire.getId(),
+                                questionnaire.getTitle(),
+                                questionnaire.getDescription(),
+                                questions);
+        }
 
-    
+        @Override
+        public List<QuestionnaireResponseDto> getAllQuestionnaires() {
+                // Obtener todos los cuestionarios
+                List<Questionnaire> questionnaires = questionnaireRepository.findAll();
+
+                // Mapear los cuestionarios a DTOs
+                return questionnaires.stream()
+                                .map(q -> new QuestionnaireResponseDto(
+                                                q.getId(),
+                                                q.getTitle(),
+                                                q.getDescription(),
+                                                null // Dejamos las preguntas en null porque solo queremos los
+                                                     // cuestionarios
+                                ))
+                                .collect(Collectors.toList());
+        }
+
 }
