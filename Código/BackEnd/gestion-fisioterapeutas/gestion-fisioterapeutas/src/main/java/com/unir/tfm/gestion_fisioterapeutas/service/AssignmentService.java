@@ -11,7 +11,8 @@ public interface AssignmentService {
 
     boolean isUserValid(Long userId, String expectedRole);
 
-    List<Assignment> getAssignedPatients(Long physiotherapistId);
+    List<User> getAssignedPatients(Long physiotherapistId);
+
     List<Assignment> getAssignmentsByPhysiotherapist(Long physiotherapistId);
     List<User> getUnassignedPatients(Long physiotherapistId);
 

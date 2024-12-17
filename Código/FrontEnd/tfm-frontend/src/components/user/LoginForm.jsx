@@ -17,7 +17,7 @@ const Login = () => {
     } else if (role === 'patient') {
       navigate('/patient');
     } else if (role === 'physiotherapist') {
-      navigate('/physiotherapist');
+      navigate('/pyshiotherapist/dashboard');
     }
   };
 

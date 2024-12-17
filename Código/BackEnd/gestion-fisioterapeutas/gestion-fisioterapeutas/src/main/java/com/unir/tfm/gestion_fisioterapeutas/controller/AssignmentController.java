@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,9 +44,9 @@ public class AssignmentController {
 
     // EndPoint para obtener los pacientes asignados a un fisioterapeuta
     @GetMapping("/pysiotherapist/{physiotherapistId}")
-    public ResponseEntity<List<Assignment>> getAssignedPatients(@RequestParam Long physiotherapistId) {
-        List<Assignment> assignments = assignmentService.getAssignmentsByPhysiotherapist(physiotherapistId);
-        return ResponseEntity.ok(assignments);
+    public ResponseEntity<List<User>> getAssignedPatients(@PathVariable Long physiotherapistId) {
+        List<User> patients = assignmentService.getAssignedPatients(physiotherapistId);
+        return ResponseEntity.ok(patients);
     }
 
     @GetMapping("/exists")

@@ -103,9 +103,24 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public List<Assignment> getAssignedPatients(Long physiotherapistId) {
-        return assignmentRepository.findByPhysiotherapistId(physiotherapistId);
-    }
+public List<User> getAssignedPatients(Long physiotherapistId) {
+    // Obtener todas las asignaciones por el ID del fisioterapeuta
+    List<Assignment> assignments = assignmentRepository.findByPhysiotherapistId(physiotherapistId);
+
+    // Obtener los IDs de los pacientes asignados
+    List<Long> patientIds = assignments.stream()
+                                       .map(Assignment::getPatientId)
+                                       .distinct()
+                                       .collect(Collectors.toList());
+
+    // Llamar al microservicio de usuarios para obtener los datos completos de los pacientes
+    String token = obtenerTokenActual();
+    return patientIds.stream()
+                     .map(patientId -> usersFacade.getUser(patientId, token))
+                     .filter(user -> user != null) // Asegúrate de excluir nulos
+                     .collect(Collectors.toList());
+}
+
 
     @Override
     public boolean isUserValid(Long userId, String expectedRole) {

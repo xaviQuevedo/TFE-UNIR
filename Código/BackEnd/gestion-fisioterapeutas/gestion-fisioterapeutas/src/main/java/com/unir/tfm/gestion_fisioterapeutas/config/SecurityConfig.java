@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/assignments/**").hasRole("admin")
+                        .requestMatchers("/assignments/**").hasAnyRole("admin", "physiotherapist")
                         .anyRequest().authenticated());  // Especifica el orden del filtro
         return http.build();
     }

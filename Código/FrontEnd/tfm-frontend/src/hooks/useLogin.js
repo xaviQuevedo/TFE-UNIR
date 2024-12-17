@@ -13,9 +13,10 @@ const useLogin = () => {
         email,
         password,
       });
-      const { token, role } = response.data;
+      const { token, role, id } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("id", id);
       setStatus("Logged in");
       return role;
     } catch (error) {
