@@ -1,5 +1,7 @@
 package com.unir.tfm.gestion_cuestionarios.model.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,14 +20,22 @@ public class PatientQuestionnaire {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "patient_id", nullable =false)
+    private Long patientId;
+
+    @Column(name = "physiotherapist_id", nullable = false)
+    private Long physiotherapistId;
 
     @ManyToOne
-    @JoinColumn(name = "questionnaire_id")
+    @JoinColumn(name = "questionnaire_id", nullable = false)
     private Questionnaire questionnaire;
 
-    @Column(name = "status")
-    private String status;
+    @Builder.Default
+    @Column(name = "status", nullable = false)
+    private String status = "pending";
+
+    @Builder.Default
+    @Column(name = "assigned_at", nullable = false, updatable = false)
+    private LocalDateTime assignedAt = LocalDateTime.now();
 
 }

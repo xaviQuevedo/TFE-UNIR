@@ -1,5 +1,6 @@
 package com.unir.tfm.gestion_cuestionarios.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,22 +40,32 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
         @Override
         public void assignQuestionnaire(AssignQuestionnaireRequest request) {
-                // Verificar que el usuario existe
-                if (!userClient.userExists(request.getUserId())) {
+                // Verificar que el paciente existe
+                if (!userClient.userExists(request.getPatientId())) {
                         throw new RuntimeException("User not found");
                 }
+                // Verificar que el fisioterapeuta existe
 
-                // Buscar el cuestionario por su ID
-                Questionnaire questionnaire = questionnaireRepository.findById(request.getQuestionnaireId())
-                                .orElseThrow(() -> new RuntimeException("Questionnaire not found"));
+                if (!userClient.userExists(request.getPhysiotherapistId())) {
+                        throw new RuntimeException("Physiotherapist not found");
+                }
 
-                // Crear y guardar la relación con el paciente
-                PatientQuestionnaire patientQuestionnaire = new PatientQuestionnaire();
-                patientQuestionnaire.setUserId(request.getUserId());
-                patientQuestionnaire.setQuestionnaire(questionnaire);
-                patientQuestionnaire.setStatus("pending");
+                for (Long questionnaireId : request.getQuestionnaireIds()) {
+                        // Buscar el cuestionario por su ID
+                        Questionnaire questionnaire = questionnaireRepository.findById(questionnaireId)
+                                        .orElseThrow(() -> new RuntimeException("Questionnaire not found"));
 
-                patientQuestionnaireRepository.save(patientQuestionnaire);
+                        // Crear y guardar la relación con el paciente y el fisioterapeuta
+                        PatientQuestionnaire patientQuestionnaire = PatientQuestionnaire.builder()
+                                        .patientId(request.getPatientId()) // ID del paciente
+                                        .physiotherapistId(request.getPhysiotherapistId()) // ID del fisioterapeuta
+                                        .questionnaire(questionnaire) // Cuestionario asignado
+                                        .status("pending") // Estado inicial
+                                        .assignedAt(LocalDateTime.now()) // Fecha de asignación
+                                        .build();
+
+                        patientQuestionnaireRepository.save(patientQuestionnaire);
+                }
         }
 
         @Override
@@ -98,19 +109,27 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         }
 
         @Override
-        public List<QuestionnaireResponseDto> getAllQuestionnaires() {
-                // Obtener todos los cuestionarios
-                List<Questionnaire> questionnaires = questionnaireRepository.findAll();
+        public List<QuestionnaireResponseDto> getAvailableQuestionnaires(Long patientId) {
+                // Obtener IDs de cuestionarios asignados al paciente con estado "pending"
+                List<Long> pendingQuestionnaireIds = patientQuestionnaireRepository
+                                .findByPatientIdAndStatus(patientId, "pending")
+                                .stream()
+                                .map(pq -> pq.getQuestionnaire().getId())
+                                .collect(Collectors.toList());
 
-                // Mapear los cuestionarios a DTOs
-                return questionnaires.stream()
+                // Obtener cuestionarios no asignados o completados
+                List<Questionnaire> availableQuestionnaires = questionnaireRepository.findAll()
+                                .stream()
+                                .filter(q -> !pendingQuestionnaireIds.contains(q.getId()))
+                                .collect(Collectors.toList());
+
+                // Mapear a DTOs
+                return availableQuestionnaires.stream()
                                 .map(q -> new QuestionnaireResponseDto(
                                                 q.getId(),
                                                 q.getTitle(),
                                                 q.getDescription(),
-                                                null // Dejamos las preguntas en null porque solo queremos los
-                                                     // cuestionarios
-                                ))
+                                                null))
                                 .collect(Collectors.toList());
         }
 

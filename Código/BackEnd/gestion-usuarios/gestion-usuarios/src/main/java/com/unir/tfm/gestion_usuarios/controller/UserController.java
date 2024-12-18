@@ -44,19 +44,20 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /* @GetMapping("/{id}")
-    public ResponseEntity<Boolean> userExists(@PathVariable Long id) {
-        
-        return ResponseEntity.ok(userService.existById(id));
-    }
- */
+    /*
+     * @GetMapping("/{id}")
+     * public ResponseEntity<Boolean> userExists(@PathVariable Long id) {
+     * 
+     * return ResponseEntity.ok(userService.existById(id));
+     * }
+     */
 
- @GetMapping("/{id}")
-public ResponseEntity<User> getUserById(@PathVariable Long id) {
-    User user = userService.findById(id)
-                           .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    return ResponseEntity.ok(user);
-}
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return ResponseEntity.ok(user);
+    }
 
     @PostMapping("/admin/register")
     @PreAuthorize("hasRole('admin')")
@@ -94,7 +95,7 @@ public ResponseEntity<User> getUserById(@PathVariable Long id) {
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        System.out.println("userr"+users);
+        System.out.println("userr" + users);
         return ResponseEntity.ok(users);
     }
 

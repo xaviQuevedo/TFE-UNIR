@@ -13,6 +13,6 @@ public interface QuestionnaireService {
 
     QuestionnaireResponseDto getQuestionnaire(Long questionnaireId);
 
-    List<QuestionnaireResponseDto> getAllQuestionnaires();
+    List<QuestionnaireResponseDto> getAvailableQuestionnaires(Long patientId);
 
 }
