@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useAnswerQuestionnaire from "../../hooks/useAnswerQuestionnaire";
 import "../../styles/AnswerQuestionnaire.css";
@@ -16,10 +16,15 @@ const AnswerQuestionnaire = () => {
   } = useAnswerQuestionnaire();
   const { questionnaireId } = useParams();
   const navigate = useNavigate();
+  const [loadedQuestionnaireId, setLoadedQuestionnaireId] = useState(null);
 
   useEffect(() => {
-    setSelectedQuestionnaire({ id: questionnaireId });
-  }, [questionnaireId, setSelectedQuestionnaire]);
+    // Evita múltiples llamadas para el mismo cuestionario
+    if (questionnaireId !== loadedQuestionnaireId) {
+      setSelectedQuestionnaire({ id: questionnaireId });
+      setLoadedQuestionnaireId(questionnaireId);
+    }
+  }, [questionnaireId, loadedQuestionnaireId, setSelectedQuestionnaire]);
 
   const handleBack = () => {
     navigate("/patient/pending-questionnaires");
@@ -43,7 +48,9 @@ const AnswerQuestionnaire = () => {
       {success && (
         <p className="success-message">
           {success}{" "}
-          <button onClick={handleBack}>Volver a Cuestionarios Pendientes</button>
+          <button onClick={handleBack}>
+            Volver a Cuestionarios Pendientes
+          </button>
         </p>
       )}
       {loading ? (
@@ -57,22 +64,38 @@ const AnswerQuestionnaire = () => {
                 <input
                   type="text"
                   value={responses[question.id] || ""}
-                  onChange={(e) => handleResponseChange(question.id, e.target.value)}
+                  onChange={(e) =>
+                    handleResponseChange(question.id, e.target.value)
+                  }
                 />
               )}
-              {question.type === "scale" && (
+              {question.type === "scale" && question.options ? (
+                <select
+                  value={responses[question.id] || ""}
+                  onChange={(e) =>
+                    handleResponseChange(question.id, e.target.value)
+                  }
+                >
+                  <option value="">Seleccionar...</option>
+                  {renderOptions(question.options)}
+                </select>
+              ) : question.type === "scale" ? (
                 <input
                   type="number"
                   min="0"
                   max="10"
                   value={responses[question.id] || ""}
-                  onChange={(e) => handleResponseChange(question.id, e.target.value)}
+                  onChange={(e) =>
+                    handleResponseChange(question.id, e.target.value)
+                  }
                 />
-              )}
+              ) : null}
               {question.type === "multiple" && (
                 <select
                   value={responses[question.id] || ""}
-                  onChange={(e) => handleResponseChange(question.id, e.target.value)}
+                  onChange={(e) =>
+                    handleResponseChange(question.id, e.target.value)
+                  }
                 >
                   <option value="">Seleccionar...</option>
                   {renderOptions(question.options)}
@@ -80,6 +103,7 @@ const AnswerQuestionnaire = () => {
               )}
             </div>
           ))}
+
           <button onClick={submitResponses} disabled={loading}>
             {loading ? "Enviando..." : "Enviar Respuestas"}
           </button>
