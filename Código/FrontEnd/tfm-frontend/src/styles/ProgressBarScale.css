@@ -1,0 +1,52 @@
+.progress-bar-container {
+    width: 100%;
+    margin: 20px 0;
+  }
+  
+  .progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+    position: relative;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .progress-step {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .progress-step:not(:last-child) {
+    border-right: 1px solid #d0d0d0;
+  }
+  
+  .progress-step.selected {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  
+  .progress-step.hovered {
+    background-color: #81c784;
+  }
+  
+  .progress-label {
+    font-size: 12px;
+    position: absolute;
+    top: -25px;
+  }
+  
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  

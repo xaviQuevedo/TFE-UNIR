@@ -1,0 +1,53 @@
+/* SF36Questionnaire.css */
+.sf36-question-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sf36-question-text {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.sf36-options-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Usamos grid layout */
+  gap: 15px; /* Espaciado uniforme entre opciones */
+  justify-content: center;
+}
+
+.sf36-option {
+  background-color: #f8f9fa;
+  border: 2px solid #007bff; /* Ajustado para que coincida con McGill */
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  font-size: 14px;
+  color: #007bff; /* Color de texto */
+}
+
+.sf36-option.selected {
+  background-color: #0056b3; /* Azul más oscuro para opciones seleccionadas */
+  color: white;
+  border-color: #004085;
+}
+
+.sf36-option:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .sf36-options-container {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Más compacto en pantallas pequeñas */
+    gap: 10px;
+  }
+
+  .sf36-option {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}

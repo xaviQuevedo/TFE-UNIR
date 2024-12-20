@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useAnswerQuestionnaire from "../../hooks/useAnswerQuestionnaire";
+
 import "../../styles/AnswerQuestionnaire.css";
+
+//Importacion de componentes de los cuestionarios
+import BergScale from "../questionnaire/BergScale";
+import EmojiScale from "../questionnaire/EmojiScale";
+import ProgressBarScale from "../questionnaire/ProgressBarScale";
+import BarthelIndex from "../questionnaire/BarthelIndex";
+import McGillPainQuestionnaire from "../questionnaire/McGillPainQuestionnaire";
+import SF36Questionnaire from "../questionnaire/SF36Questionnaire";
+import PainSelfEfficacyScale from "../questionnaire/PainSelfEfficacyScale";
 
 const AnswerQuestionnaire = () => {
   const {
     questions,
     responses,
+    title,
     handleResponseChange,
     submitResponses,
     loading,
@@ -19,7 +30,6 @@ const AnswerQuestionnaire = () => {
   const [loadedQuestionnaireId, setLoadedQuestionnaireId] = useState(null);
 
   useEffect(() => {
-    // Evita múltiples llamadas para el mismo cuestionario
     if (questionnaireId !== loadedQuestionnaireId) {
       setSelectedQuestionnaire({ id: questionnaireId });
       setLoadedQuestionnaireId(questionnaireId);
@@ -30,20 +40,10 @@ const AnswerQuestionnaire = () => {
     navigate("/patient/pending-questionnaires");
   };
 
-  const renderOptions = (options) => {
-    if (typeof options === "object" && options !== null) {
-      return Object.entries(options).map(([key, value]) => (
-        <option key={key} value={key}>
-          {value}
-        </option>
-      ));
-    }
-    return null;
-  };
-
   return (
     <div className="answer-questionnaire-container">
       <h1>Responder Cuestionario</h1>
+      {title && <h2>{title}</h2>}
       {error && <p className="error-message">{error}</p>}
       {success && (
         <p className="success-message">
@@ -60,47 +60,53 @@ const AnswerQuestionnaire = () => {
           {questions.map((question) => (
             <div key={question.id} className="question-item">
               <p>{question.text}</p>
-              {question.type === "text" && (
-                <input
-                  type="text"
-                  value={responses[question.id] || ""}
-                  onChange={(e) =>
-                    handleResponseChange(question.id, e.target.value)
-                  }
+              {title === "Escala de Autonomía de Berg" &&
+              question.type === "scale" ? (
+                <BergScale
+                  options={question.options}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
                 />
-              )}
-              {question.type === "scale" && question.options ? (
-                <select
-                  value={responses[question.id] || ""}
-                  onChange={(e) =>
-                    handleResponseChange(question.id, e.target.value)
-                  }
-                >
-                  <option value="">Seleccionar...</option>
-                  {renderOptions(question.options)}
-                </select>
-              ) : question.type === "scale" ? (
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  value={responses[question.id] || ""}
-                  onChange={(e) =>
-                    handleResponseChange(question.id, e.target.value)
-                  }
+              ) : title === "Índice de Barthel" ? (
+                <BarthelIndex
+                  question={question}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
                 />
+              ) : title === "Escala de expresiones faciales" &&
+                question.type === "scale" ? (
+                <EmojiScale
+                  options={question.options}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
+                />
+              ) : title === "Escala visual analógica" &&
+                question.type === "scale" ? (
+                <ProgressBarScale
+                  options={question.options}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
+                />
+                ) : title === "Cuestionario de Dolor de McGill" ? (
+                  <McGillPainQuestionnaire
+                    question={question}
+                    selectedValue={responses[question.id]}
+                    onSelect={(value) => handleResponseChange(question.id, value)}
+                  />
+                ) : title === "Cuestionario SF36" ? (
+                  <SF36Questionnaire
+                    question={question}
+                    selectedValue={responses[question.id]}
+                    onSelect={(value) => handleResponseChange(question.id, value)}
+                  />
+                ): title === "Cuestionario de autoeficiencia frente al dolor" &&
+                question.type === "scale" ? (
+                  <PainSelfEfficacyScale
+                    question={question}
+                    selectedValue={responses[question.id]}
+                    onSelect={(value) => handleResponseChange(question.id, value)}
+                  />
               ) : null}
-              {question.type === "multiple" && (
-                <select
-                  value={responses[question.id] || ""}
-                  onChange={(e) =>
-                    handleResponseChange(question.id, e.target.value)
-                  }
-                >
-                  <option value="">Seleccionar...</option>
-                  {renderOptions(question.options)}
-                </select>
-              )}
             </div>
           ))}
 

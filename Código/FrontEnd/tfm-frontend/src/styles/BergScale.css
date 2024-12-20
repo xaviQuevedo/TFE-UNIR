@@ -1,0 +1,40 @@
+.berg-scale-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px; /* Espacio entre botones */
+    margin: 15px 0;
+  }
+  
+  .berg-scale-option {
+    padding: 5px 10px; /* Tamaño más compacto */
+    border: 1px solid #007bff;
+    background-color: white;
+    color: #007bff;
+    border-radius: 3px;
+    font-size: 14px; /* Texto más pequeño */
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .berg-scale-option:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .berg-scale-option.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+  }
+  
+  @media (max-width: 600px) {
+    .berg-scale-container {
+      flex-wrap: wrap; /* Opciones envuelven si la pantalla es pequeña */
+    }
+  
+    .berg-scale-option {
+      margin-bottom: 5px; /* Espacio adicional en dispositivos pequeños */
+    }
+  }
+  

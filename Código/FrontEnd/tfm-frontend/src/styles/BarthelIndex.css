@@ -1,0 +1,57 @@
+.barthel-question-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.barthel-options-container {
+  display: grid; /* Usamos grid en lugar de flex */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dos columnas por fila */
+  gap: 15px; /* Espacio entre las opciones */
+  justify-content: center; /* Centrar el grid horizontalmente */
+}
+
+.barthel-option {
+  padding: 10px;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  color: #007bff;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.barthel-option:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.barthel-option.selected {
+  background-color: #0056b3;
+  color: white;
+  border-color: #004085;
+}
+
+.barthel-option-score {
+  display: block;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.barthel-option-text {
+  display: block;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .barthel-options-container {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Más compacto en pantallas pequeñas */
+    gap: 10px;
+  }
+
+  .barthel-option {
+    font-size: 12px;
+  }
+}

@@ -8,6 +8,7 @@ const useAnswerQuestionnaire = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState("");
+  const [title, setTitle] = useState("");
 
   const setSelectedQuestionnaire = async (questionnaire) => {
     try {
@@ -20,6 +21,7 @@ const useAnswerQuestionnaire = () => {
         }
       );
       setQuestions(response.data.questions); // Asume que las opciones ya están formateadas correctamente
+      setTitle(response.data.title);
       setLoading(false);
     } catch (err) {
       setError("Error al cargar el cuestionario.");
@@ -56,6 +58,7 @@ const useAnswerQuestionnaire = () => {
   return {
     questions,
     responses,
+    title,
     handleResponseChange,
     submitResponses,
     setSelectedQuestionnaire,
