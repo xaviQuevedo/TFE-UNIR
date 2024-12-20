@@ -9,6 +9,9 @@ import UpdateUser from "../components/admin/UserTable";
 import AssignPatients from "../components/admin/AssignPatients";
 import PhysiotherapistDashboard from "../views/PhysiotherapistDashboard";
 import AssignQuestionnaire from "../components/physiotherapist/AssignQuestionnaires";
+import PatientDasboard from "../views/PatientDashboard";
+import CompleteQuestionnaires from "../components/patient/CompleteQuestionnaires";
+import AnswerQuestionnaire from "../components/patient/AnswerQuestionnaire";
 //import Register from "../views/Register";
 //import Questionnaires from "../views/Questionnaires";
 //import Users from "../views/Users";
@@ -24,7 +27,11 @@ const Routes = () => {
         <Route path="/admin/update-user" element={<UpdateUser />} />
         <Route path="/admin/assign-patients" element={<AssignPatients />} />
         <Route path="/pyshiotherapist/dashboard" element={<PhysiotherapistDashboard/>} />
-        <Route path= "/physiotherapist/assign-questionnaire" element={<AssignQuestionnaire />} />
+        <Route path="/physiotherapist/assign-questionnaire" element={<AssignQuestionnaire />} />
+        <Route path="/patient/dashboard" element={<PatientDasboard />} />
+        <Route path="/patient/pending-questionnaires" element={<CompleteQuestionnaires/>} />
+        <Route path="/patient/answer-questionnaire/:questionnaireId" element={<AnswerQuestionnaire />} />
+
         {/*<Route path="/register" element={<Register />} />
         <Route path="/questionnaires" element={<Questionnaires />} />
         <Route path="/users" element={<Users />} /> */}

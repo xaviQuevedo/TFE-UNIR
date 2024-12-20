@@ -4,6 +4,7 @@ const BASE_URLS = {
   gestionUsuarios: "http://localhost:8762/ms-gestion-usuarios",
   gestionFisioterapeutas: "http://localhost:8762/ms-gestion-fisioterapeutas",
   gestionCuestionarios: "http://localhost:8762/ms-gestion-cuestionarios",
+  gestionPacientes: "http://localhost:8762/ms-gestion-pacientes",
 };
 
 const createApiInstance = (service) => {
@@ -21,4 +22,5 @@ const createApiInstance = (service) => {
 export const userService = createApiInstance("gestionUsuarios");
 export const physiotherapistService = createApiInstance("gestionFisioterapeutas");
 export const questionnaireService = createApiInstance("gestionCuestionarios");
+export const patientService = createApiInstance("gestionPacientes");
 export default createApiInstance;

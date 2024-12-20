@@ -1,7 +1,6 @@
 package com.unir.tfm.gestion_cuestionarios.model.response;
 
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +13,6 @@ public class QuestionResponseDto {
     private Long id;
     private String text;
     private String type;
-    private List<String> options;
+    private Object options;
 
 }

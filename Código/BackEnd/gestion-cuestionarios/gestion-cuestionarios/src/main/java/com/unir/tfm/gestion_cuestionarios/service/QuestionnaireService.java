@@ -15,4 +15,5 @@ public interface QuestionnaireService {
 
     List<QuestionnaireResponseDto> getAvailableQuestionnaires(Long patientId);
 
+    QuestionnaireResponseDto getQuestionnaireWithQuestions(Long questionnaireId);
 }

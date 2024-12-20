@@ -23,13 +23,13 @@ public class QuestionnaireResponse {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "patient_questionnaire_id")
+    @JoinColumn(name = "patient_questionnaire_id", nullable = false)
     private PatientQuestionnaire patientQuestionnaire;
 
-    @Column(name = "response")
+    @Column(nullable = false, columnDefinition = "jsonb")
     private String response;
 
-    @Column(name = "completed_at")
+    @Column(name = "completed_at", nullable = false)
     private LocalDateTime completedAt;
 
 }

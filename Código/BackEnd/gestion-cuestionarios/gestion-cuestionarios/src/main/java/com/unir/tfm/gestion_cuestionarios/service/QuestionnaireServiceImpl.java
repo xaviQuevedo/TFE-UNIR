@@ -2,11 +2,14 @@ package com.unir.tfm.gestion_cuestionarios.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unir.tfm.gestion_cuestionarios.client.UserClient;
 import com.unir.tfm.gestion_cuestionarios.data.PatientQuestionnaireRepository;
 import com.unir.tfm.gestion_cuestionarios.data.QuestionRepository;
@@ -70,22 +73,23 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
         @Override
         public void submitAnswer(SubmitAnswerRequest request) {
-                // Implementar la lógica para guardar respuestas
-
-                // Relacion de cuestionario con paciente
+                // Verificar que el cuestionario asignado existe
                 PatientQuestionnaire patientQuestionnaire = patientQuestionnaireRepository
                                 .findById(request.getPatientQuestionnaireId())
                                 .orElseThrow(() -> new RuntimeException("Patient questionnaire not found"));
 
-                // Se crea la nueva respuesta
-                QuestionnaireResponse questionnaireResponse = new QuestionnaireResponse();
-                questionnaireResponse.setPatientQuestionnaire(patientQuestionnaire);
-                questionnaireResponse.setResponse(request.getResponse());
-                questionnaireResponse.setCompletedAt(request.getCompletedAt());
+                // Guardar la respuesta
+                QuestionnaireResponse response = QuestionnaireResponse.builder()
+                                .patientQuestionnaire(patientQuestionnaire)
+                                .response(request.getResponse())
+                                .completedAt(LocalDateTime.now())
+                                .build();
 
-                // Se guarda la respuesta
-                questionnaireResponseRepository.save(questionnaireResponse);
+                questionnaireResponseRepository.save(response);
 
+                // Actualizar el estado del cuestionario asignado
+                patientQuestionnaire.setStatus("completed");
+                patientQuestionnaireRepository.save(patientQuestionnaire);
         }
 
         @Override
@@ -131,6 +135,59 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
                                                 q.getDescription(),
                                                 null))
                                 .collect(Collectors.toList());
+        }
+
+        @Override
+        public QuestionnaireResponseDto getQuestionnaireWithQuestions(Long questionnaireId) {
+                Questionnaire questionnaire = questionnaireRepository.findById(questionnaireId)
+                                .orElseThrow(() -> new RuntimeException("Questionnaire not found"));
+
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                List<QuestionResponseDto> questions = questionRepository.findByQuestionnaireId(questionnaireId).stream()
+                                .map(question -> {
+                                        Object parsedOptions = null;
+                                        try {
+                                                if (question.getOptions() != null && !question.getOptions().isEmpty()) {
+                                                        String optionsAsString = question.getOptions().trim();
+
+                                                        // Caso 1: JSON Mapa ({"key": "value", ...})
+                                                        if (optionsAsString.startsWith("{")
+                                                                        && optionsAsString.contains(":")) {
+                                                                parsedOptions = objectMapper.readValue(
+                                                                                optionsAsString,
+                                                                                new TypeReference<Map<String, String>>() {
+                                                                                });
+                                                        }
+                                                        // Caso 2: JSON Lista (["value1", "value2", ...])
+                                                        else if (optionsAsString.startsWith("[")
+                                                                        && optionsAsString.endsWith("]")) {
+                                                                parsedOptions = objectMapper.readValue(
+                                                                                optionsAsString,
+                                                                                new TypeReference<List<String>>() {
+                                                                                });
+                                                        }
+                                                }
+                                        } catch (Exception e) {
+                                                throw new RuntimeException(
+                                                                "Error al procesar opciones de la pregunta con ID: "
+                                                                                + question.getId(),
+                                                                e);
+                                        }
+
+                                        return new QuestionResponseDto(
+                                                        question.getId(),
+                                                        question.getText(),
+                                                        question.getType(),
+                                                        parsedOptions);
+                                })
+                                .collect(Collectors.toList());
+
+                return new QuestionnaireResponseDto(
+                                questionnaire.getId(),
+                                questionnaire.getTitle(),
+                                questionnaire.getDescription(),
+                                questions);
         }
 
 }

@@ -1,7 +1,6 @@
 package com.unir.tfm.gestion_cuestionarios.model.entity;
 
 
-import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,14 +20,15 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "text")
+    @Column(name = "question_text")
     private String text;
 
-    @Column(name = "type")
+    @Column(name = "question_type")
     private String type;
 
-    @ElementCollection
-    private List<String> options;
+    // Cambiar el tipo a String para reflejar el almacenamiento de JSON o texto en la base de datos.
+    @Column(name = "options", columnDefinition = "TEXT")
+    private String options;
 
     @ManyToOne
     @JoinColumn(name = "questionnaire_id")

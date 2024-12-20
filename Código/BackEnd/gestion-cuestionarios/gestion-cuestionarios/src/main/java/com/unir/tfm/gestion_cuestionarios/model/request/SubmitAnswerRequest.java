@@ -1,14 +1,12 @@
 package com.unir.tfm.gestion_cuestionarios.model.request;
 
-import java.time.LocalDateTime;
 
 import lombok.Data;
 
 @Data
 public class SubmitAnswerRequest {
     private Long patientQuestionnaireId;
-    private String response;
-    private LocalDateTime completedAt;
+    private String response; // Respuestas del cuestionario (almacenado como JSON)
 
 
 }

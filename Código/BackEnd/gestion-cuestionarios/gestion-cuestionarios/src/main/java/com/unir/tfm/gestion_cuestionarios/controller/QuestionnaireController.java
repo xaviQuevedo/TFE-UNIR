@@ -39,8 +39,12 @@ public class QuestionnaireController {
 
     @PostMapping("/submit")
     public ResponseEntity<String> submitAnswer(@RequestBody SubmitAnswerRequest request) {
-        questionnaireService.submitAnswer(request);
-        return ResponseEntity.ok("Answer submitted");
+        try {
+            questionnaireService.submitAnswer(request);
+            return ResponseEntity.ok("Respuesta guardada correctamente.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{questionnaireId}")
@@ -53,6 +57,17 @@ public class QuestionnaireController {
         List<QuestionnaireResponseDto> availableQuestionnaires = questionnaireService
                 .getAvailableQuestionnaires(patientId);
         return ResponseEntity.ok(availableQuestionnaires);
+    }
+
+    @GetMapping("/{questionnaireId}/questions")
+    public ResponseEntity<QuestionnaireResponseDto> getQuestionnaireWithQuestions(@PathVariable Long questionnaireId) {
+        try {
+            QuestionnaireResponseDto questionnaire = questionnaireService
+                    .getQuestionnaireWithQuestions(questionnaireId);
+            return ResponseEntity.ok(questionnaire);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
 }
