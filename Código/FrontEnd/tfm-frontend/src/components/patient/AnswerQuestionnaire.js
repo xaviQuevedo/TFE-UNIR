@@ -12,6 +12,8 @@ import BarthelIndex from "../questionnaire/BarthelIndex";
 import McGillPainQuestionnaire from "../questionnaire/McGillPainQuestionnaire";
 import SF36Questionnaire from "../questionnaire/SF36Questionnaire";
 import PainSelfEfficacyScale from "../questionnaire/PainSelfEfficacyScale";
+import UpperLimbFunctionalIndex from "../questionnaire/UpperLimbFunctionalIndex";
+import LowerLimbFunctionalIndex from "../questionnaire/LowerLimbFunctionalIndex";
 
 const AnswerQuestionnaire = () => {
   const {
@@ -87,25 +89,39 @@ const AnswerQuestionnaire = () => {
                   selectedValue={responses[question.id]}
                   onSelect={(value) => handleResponseChange(question.id, value)}
                 />
-                ) : title === "Cuestionario de Dolor de McGill" ? (
-                  <McGillPainQuestionnaire
-                    question={question}
-                    selectedValue={responses[question.id]}
-                    onSelect={(value) => handleResponseChange(question.id, value)}
-                  />
-                ) : title === "Cuestionario SF36" ? (
-                  <SF36Questionnaire
-                    question={question}
-                    selectedValue={responses[question.id]}
-                    onSelect={(value) => handleResponseChange(question.id, value)}
-                  />
-                ): title === "Cuestionario de autoeficiencia frente al dolor" &&
+              ) : title === "Cuestionario de Dolor de McGill" ? (
+                <McGillPainQuestionnaire
+                  question={question}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
+                />
+              ) : title === "Cuestionario SF36" ? (
+                <SF36Questionnaire
+                  question={question}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
+                />
+              ) : title === "Cuestionario de autoeficiencia frente al dolor" &&
                 question.type === "scale" ? (
-                  <PainSelfEfficacyScale
-                    question={question}
-                    selectedValue={responses[question.id]}
-                    onSelect={(value) => handleResponseChange(question.id, value)}
-                  />
+                <PainSelfEfficacyScale
+                  question={question}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
+                />
+              ) : title === "Índice funcional de la extremidad superior" &&
+                question.type === "scale" ? (
+                <UpperLimbFunctionalIndex
+                  question={question}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
+                />
+              ) : title === "Índice funcional de las extremidades inferiores" &&
+                question.type === "scale" ? (
+                <LowerLimbFunctionalIndex
+                  question={question}
+                  selectedValue={responses[question.id]}
+                  onSelect={(value) => handleResponseChange(question.id, value)}
+                />
               ) : null}
             </div>
           ))}

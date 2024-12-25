@@ -1,6 +1,7 @@
 package com.unir.tfm.gestion_cuestionarios.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,5 +38,10 @@ public class PatientQuestionnaire {
     @Builder.Default
     @Column(name = "assigned_at", nullable = false, updatable = false)
     private LocalDateTime assignedAt = LocalDateTime.now();
+
+    @Builder.Default
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt = new Date();
 
 }

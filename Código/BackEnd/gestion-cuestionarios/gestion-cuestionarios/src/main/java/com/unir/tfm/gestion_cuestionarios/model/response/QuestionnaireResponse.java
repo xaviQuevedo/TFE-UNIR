@@ -1,14 +1,12 @@
 package com.unir.tfm.gestion_cuestionarios.model.response;
 
-import java.time.LocalDateTime;
-
-import com.unir.tfm.gestion_cuestionarios.model.entity.PatientQuestionnaire;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Data;
+import java.util.Date;
 
 @Data
 @Entity
@@ -17,19 +15,29 @@ import lombok.Data;
 @NoArgsConstructor
 @Builder
 public class QuestionnaireResponse {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "patient_questionnaire_id", nullable = false)
-    private PatientQuestionnaire patientQuestionnaire;
+    @Column(name = "questionnaire_id", nullable = false)
+    private Long questionnaireId;
 
-    @Column(nullable = false, columnDefinition = "jsonb")
-    private String response;
+    @Column(name = "question_id", nullable = false)
+    private Long questionId;
 
-    @Column(name = "completed_at", nullable = false)
-    private LocalDateTime completedAt;
+    @Column(name = "patient_id", nullable = false)
+    private Long patientId;
+
+    @Column(name = "physiotherapist_id")
+    private Long physiotherapistId;
+
+    @Column(name = "answer", nullable = false)
+    private String answer;
+
+    @Builder.Default
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt = new Date();
 
 }
+

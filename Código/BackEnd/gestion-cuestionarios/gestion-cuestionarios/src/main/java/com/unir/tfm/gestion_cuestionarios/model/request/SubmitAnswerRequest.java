@@ -1,4 +1,4 @@
-package com.unir.tfm.gestion_cuestionarios.model.request;
+/* package com.unir.tfm.gestion_cuestionarios.model.request;
 
 
 import lombok.Data;
@@ -10,3 +10,4 @@ public class SubmitAnswerRequest {
 
 
 }
+ */

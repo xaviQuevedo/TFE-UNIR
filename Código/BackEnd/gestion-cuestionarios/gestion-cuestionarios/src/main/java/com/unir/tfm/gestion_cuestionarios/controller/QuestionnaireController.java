@@ -1,6 +1,7 @@
 package com.unir.tfm.gestion_cuestionarios.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,11 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unir.tfm.gestion_cuestionarios.model.request.AssignQuestionnaireRequest;
-import com.unir.tfm.gestion_cuestionarios.model.request.SubmitAnswerRequest;
 import com.unir.tfm.gestion_cuestionarios.model.response.QuestionnaireResponseDto;
+import com.unir.tfm.gestion_cuestionarios.model.response.ResponseDto;
 import com.unir.tfm.gestion_cuestionarios.service.QuestionnaireService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,15 +39,31 @@ public class QuestionnaireController {
         }
     }
 
-    @PostMapping("/submit")
-    public ResponseEntity<String> submitAnswer(@RequestBody SubmitAnswerRequest request) {
+    @PostMapping("/{questionnaireId}/submit")
+    public ResponseEntity<String> submitQuestionnaireResponses(
+            @PathVariable Long questionnaireId,
+            @RequestParam Long patientId,
+            @RequestBody Map<String, List<ResponseDto>> responses) {
         try {
-            questionnaireService.submitAnswer(request);
-            return ResponseEntity.ok("Respuesta guardada correctamente.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            questionnaireService.submitAnswerAndUpdateStatus(questionnaireId, patientId, responses);
+            return ResponseEntity.ok("Respuestas guardadas y cuestionario completado");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    /*
+     * @PostMapping("/submit")
+     * public ResponseEntity<String> submitAnswer(@RequestBody SubmitAnswerRequest
+     * request) {
+     * try {
+     * questionnaireService.submitAnswer(request);
+     * return ResponseEntity.ok("Respuesta guardada correctamente.");
+     * } catch (RuntimeException e) {
+     * return ResponseEntity.badRequest().body(e.getMessage());
+     * }
+     * }
+     */
 
     @GetMapping("/{questionnaireId}")
     public ResponseEntity<QuestionnaireResponseDto> getQuestionnaire(@PathVariable Long questionnaireId) {

@@ -1,6 +1,7 @@
 package com.unir.tfm.gestion_cuestionarios.service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,10 +19,10 @@ import com.unir.tfm.gestion_cuestionarios.data.QuestionnaireResponseRepository;
 import com.unir.tfm.gestion_cuestionarios.model.entity.PatientQuestionnaire;
 import com.unir.tfm.gestion_cuestionarios.model.entity.Questionnaire;
 import com.unir.tfm.gestion_cuestionarios.model.request.AssignQuestionnaireRequest;
-import com.unir.tfm.gestion_cuestionarios.model.request.SubmitAnswerRequest;
 import com.unir.tfm.gestion_cuestionarios.model.response.QuestionResponseDto;
 import com.unir.tfm.gestion_cuestionarios.model.response.QuestionnaireResponse;
 import com.unir.tfm.gestion_cuestionarios.model.response.QuestionnaireResponseDto;
+import com.unir.tfm.gestion_cuestionarios.model.response.ResponseDto;
 
 @Service
 public class QuestionnaireServiceImpl implements QuestionnaireService {
@@ -72,24 +73,32 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         }
 
         @Override
-        public void submitAnswer(SubmitAnswerRequest request) {
+        public void submitAnswerAndUpdateStatus(Long questionnaireId, Long patientId,
+                        Map<String, List<ResponseDto>> responses) {
+                List<ResponseDto> responseList = responses.get("responses");
+
+                if (responseList != null) {
+                        for (ResponseDto response : responseList) {
+                                QuestionnaireResponse responseEntity = new QuestionnaireResponse();
+                                responseEntity.setQuestionnaireId(questionnaireId);
+                                responseEntity.setQuestionId(response.getQuestionId());
+                                responseEntity.setPatientId(patientId);
+                                responseEntity.setAnswer(response.getAnswer());
+                                responseEntity.setCreatedAt(new Date());
+                                questionnaireResponseRepository.save(responseEntity);
+
+                        }
+                } else {
+                        throw new RuntimeException("No se encontraron respuestas en la solicitud");
+                }
                 // Verificar que el cuestionario asignado existe
                 PatientQuestionnaire patientQuestionnaire = patientQuestionnaireRepository
-                                .findById(request.getPatientQuestionnaireId())
-                                .orElseThrow(() -> new RuntimeException("Patient questionnaire not found"));
-
-                // Guardar la respuesta
-                QuestionnaireResponse response = QuestionnaireResponse.builder()
-                                .patientQuestionnaire(patientQuestionnaire)
-                                .response(request.getResponse())
-                                .completedAt(LocalDateTime.now())
-                                .build();
-
-                questionnaireResponseRepository.save(response);
-
-                // Actualizar el estado del cuestionario asignado
+                                .findByPatientIdAndQuestionnaireId(questionnaireId, patientId)
+                                .orElseThrow(() -> new RuntimeException("Cuestionario no asignado encontrado"));
                 patientQuestionnaire.setStatus("completed");
+                patientQuestionnaire.setUpdatedAt(new Date());
                 patientQuestionnaireRepository.save(patientQuestionnaire);
+
         }
 
         @Override

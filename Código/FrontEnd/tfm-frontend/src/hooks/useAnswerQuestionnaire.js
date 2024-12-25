@@ -9,6 +9,7 @@ const useAnswerQuestionnaire = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState("");
   const [title, setTitle] = useState("");
+  const [questionnaireId, setQuestionnaireId] = useState(null); // Ahora usamos setQuestionnaireId para actualizar el estado
 
   const setSelectedQuestionnaire = async (questionnaire) => {
     try {
@@ -20,7 +21,12 @@ const useAnswerQuestionnaire = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setQuestions(response.data.questions); // Asume que las opciones ya están formateadas correctamente
+      
+      // Actualizar el ID del cuestionario
+      setQuestionnaireId(questionnaire.id);
+
+      // Guardar preguntas y título del cuestionario
+      setQuestions(response.data.questions);
       setTitle(response.data.title);
       setLoading(false);
     } catch (err) {
@@ -35,21 +41,45 @@ const useAnswerQuestionnaire = () => {
 
   const submitResponses = async () => {
     try {
+      console.log("submitResponses - Using questionnaireId:", questionnaireId);
+
+      
+
       setLoading(true);
       const token = localStorage.getItem("token");
       const patientId = localStorage.getItem("id");
+
+      // Formatear las respuestas
+      const formattedResponses = Object.entries(responses).map(([questionId, answer]) => ({
+        questionId: parseInt(questionId, 10),
+        answer: answer.toString(),
+      }));
+
+      const payload = { responses: formattedResponses };
+
+  
+    
+    console.log("submitResponses - Payload:", payload);
+
+      // Realizar la solicitud
       await patientService.post(
-        `/patients/${patientId}/submit-responses`,
-        {
-          responses,
-        },
+        `/patients/${patientId}/questionnaires/${questionnaireId}/submit-responses`,
+        payload,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      console.log("Token utilizadooooo:", token);
+
+      console.log("submitResponses - Payload:", {
+        responses: formattedResponses,
+    });
+    
+
       setSuccess("Respuestas enviadas correctamente.");
       setLoading(false);
     } catch (err) {
+      console.error("Error en submitResponses:", err);
       setError("Error al enviar las respuestas.");
       setLoading(false);
     }
