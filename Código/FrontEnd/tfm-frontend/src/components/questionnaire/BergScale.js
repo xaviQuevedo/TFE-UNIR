@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/BergScale.css";
+import "../../styles/questionnaires/BergScale.css";
 
 const BergScale = ({ options, selectedValue, onSelect }) => {
   return (

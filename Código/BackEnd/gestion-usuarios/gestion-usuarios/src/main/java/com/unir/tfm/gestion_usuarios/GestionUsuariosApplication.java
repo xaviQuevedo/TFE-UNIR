@@ -10,17 +10,17 @@ public class GestionUsuariosApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GestionUsuariosApplication.class, args);
 
-		/* // Crear una instancia de BCryptPasswordEncoder
+		/*  // Crear una instancia de BCryptPasswordEncoder
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 		// Contraseña que quieres codificar
-		String rawPassword = "contraseña_segura";
+		String rawPassword = "1234";
 
 		// Codificar la contraseña
 		String encodedPassword = encoder.encode(rawPassword);
 
 		// Imprimir la contraseña codificada
-		System.out.println("Contraseña codificada: " + encodedPassword); */
+		System.out.println("Contraseña codificada: " + encodedPassword); */ 
 	}
 
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/McGillPainQuestionnaire.css";
+import "../../styles/questionnaires/McGillPainQuestionnaire.css";
 
 const McGillPainQuestionnaire = ({ question, selectedValue, onSelect }) => {
   const renderOptions = () => {

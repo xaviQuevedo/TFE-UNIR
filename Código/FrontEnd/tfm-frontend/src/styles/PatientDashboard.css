@@ -1,0 +1,56 @@
+.patient-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f7dc6f, #3498db); /* Amarillo y azul en degradado */
+    color: #2d3436;
+    font-family: 'Roboto', sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .patient-dashboard-container h1 {
+    font-size: 2.8rem;
+    margin-bottom: 30px;
+    color: #2d3436; /* Gris oscuro para contraste */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .patient-dashboard-container button {
+    background-color: #3498db; /* Azul principal */
+    color: #fff;
+    font-size: 1.2rem;
+    padding: 12px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .patient-dashboard-container button:hover {
+    background-color: #f7dc6f; /* Amarillo para el hover */
+    color: #2d3436; /* Texto gris oscuro para mejor visibilidad */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .patient-dashboard-container button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .patient-dashboard-container button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5); /* Enfasis azul claro */
+  }
+  
+  .patient-dashboard-container button:disabled {
+    background-color: #b2bec3; /* Gris para deshabilitado */
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  

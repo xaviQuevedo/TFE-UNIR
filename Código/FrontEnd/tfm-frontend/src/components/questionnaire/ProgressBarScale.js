@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/ProgressBarScale.css";
+import "../../styles/questionnaires/ProgressBarScale.css";
 
 const ProgressBarScale = ({ options, selectedValue, onSelect }) => {
   const [hoverValue, setHoverValue] = useState(null);

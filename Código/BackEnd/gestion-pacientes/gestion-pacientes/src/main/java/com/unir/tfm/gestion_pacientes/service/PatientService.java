@@ -10,4 +10,9 @@ public interface PatientService {
     List<QuestionnaireDto> getPendingQuestionnaires(Long patientId);
 
     void submitQuestionnaire(Long questionnaireId, Long patientId, Map<String, List<ResponseDto>> responses);
+
+    Double calculatePatientProgress(Long patientId, Long questionnaireId);
+
+    List<QuestionnaireDto> getCompletedQuestionnaires(Long patientId);
+    Map<String, List<QuestionnaireDto>> getQuestionnaireResponses(Long patientId, Long questionnaireId);
 }

@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #4facfe, #00f2fe); /* Fondo degradado */
+  background: linear-gradient(135deg, #f7dc6f, #3498db); /* Degradado amarillo y azul */
   font-family: 'Arial', sans-serif;
 }
 

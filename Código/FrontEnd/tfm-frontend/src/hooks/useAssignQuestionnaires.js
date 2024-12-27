@@ -33,7 +33,9 @@ const useAssignQuestionnaires = () => {
         setPatients(response.data);
         setLoading(false);
       } catch (err) {
-        setError(err.response?.data?.message || "Error al cargar los pacientes.");
+        setError(
+          err.response?.data?.message || "Error al cargar los pacientes."
+        );
         setLoading(false);
       }
     };
@@ -54,7 +56,7 @@ const useAssignQuestionnaires = () => {
         const token = localStorage.getItem("token");
 
         const response = await questionnaireService.get(
-          `/questionnaires/available/${selectedPatient}`,
+          `/questionnaires/not-assigned/${selectedPatient}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -98,7 +100,9 @@ const useAssignQuestionnaires = () => {
       setSelectedQuestionnaires([]);
       setLoading(false);
     } catch (err) {
-      setError(err.response?.data?.message || "Error al asignar cuestionarios.");
+      setError(
+        err.response?.data?.message || "Error al asignar cuestionarios."
+      );
       setLoading(false);
     }
   };

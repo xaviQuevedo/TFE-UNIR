@@ -22,13 +22,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(RegisterUserRequest registerUserRequest) {
-        if (userRepository.findByEmail(registerUserRequest.getEmail()).isPresent()) {
-            throw new RuntimeException("El email ya existe");
+        if (registerUserRequest.getEmail() == null || registerUserRequest.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("El email es obligatorio.");
         }
+        if (registerUserRequest.getName() == null || registerUserRequest.getName().isEmpty()) {
+            throw new IllegalArgumentException("El nombre es obligatorio.");
+        }
+        if (registerUserRequest.getLast_name() == null || registerUserRequest.getLast_name().isEmpty()) {
+            throw new IllegalArgumentException("El apellido es obligatorio.");
+        }
+        if (registerUserRequest.getPassword() == null || registerUserRequest.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("La contraseña es obligatoria.");
+        }
+        if (registerUserRequest.getRole() == null || registerUserRequest.getRole().isEmpty()) {
+            throw new IllegalArgumentException("El rol es obligatorio.");
+        }
+
+        if (userRepository.findByEmail(registerUserRequest.getEmail()).isPresent()) {
+            throw new RuntimeException("El email ya existe.");
+        }
+
         User user = new User();
         user.setEmail(registerUserRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerUserRequest.getPassword()));
         user.setRole(registerUserRequest.getRole());
+        user.setName(registerUserRequest.getName());
+        user.setLast_name(registerUserRequest.getLast_name());
         return userRepository.save(user);
     }
 
@@ -41,6 +60,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
+
     @Override
     public boolean validatePassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
@@ -53,7 +73,7 @@ public class UserServiceImpl implements UserService {
         }
         return userRepository.existsById(userId);
     }
-    
+
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();

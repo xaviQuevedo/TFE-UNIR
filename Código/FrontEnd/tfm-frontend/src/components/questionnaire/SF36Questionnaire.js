@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/SF36Questionnaire.css";
+import "../../styles/questionnaires/SF36Questionnaire.css";
 
 const SF36Questionnaire = ({ question, selectedValue, onSelect }) => {
   const renderOptions = () => {

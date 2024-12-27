@@ -12,6 +12,9 @@ import AssignQuestionnaire from "../components/physiotherapist/AssignQuestionnai
 import PatientDasboard from "../views/PatientDashboard";
 import CompleteQuestionnaires from "../components/patient/CompleteQuestionnaires";
 import AnswerQuestionnaire from "../components/patient/AnswerQuestionnaire";
+import PatientProgress from "../components/patient/PatientProgress";
+import CompletedQuestionnaires from "../components/patient/CompletedQuestionnaires";
+import QuestionnaireResponses from "../components/patient/QuestionnaireResponses";
 //import Register from "../views/Register";
 //import Questionnaires from "../views/Questionnaires";
 //import Users from "../views/Users";
@@ -31,6 +34,9 @@ const Routes = () => {
         <Route path="/patient/dashboard" element={<PatientDasboard />} />
         <Route path="/patient/pending-questionnaires" element={<CompleteQuestionnaires/>} />
         <Route path="/patient/answer-questionnaire/:questionnaireId" element={<AnswerQuestionnaire />} />
+        <Route path="/patient/progress" element={<PatientProgress />} />
+        <Route path="/patient/completed-questionnaires" element={<CompletedQuestionnaires />} />
+        <Route path="/patient/completed-questionnaire/:questionnaireId" element={<QuestionnaireResponses />} />
 
         {/*<Route path="/register" element={<Register />} />
         <Route path="/questionnaires" element={<Questionnaires />} />

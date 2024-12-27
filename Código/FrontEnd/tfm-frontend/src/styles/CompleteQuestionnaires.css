@@ -1,64 +1,74 @@
-/* Contenedor principal */
 .complete-questionnaires-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Encabezado */
-  .complete-questionnaires-container h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-    text-align: center;
-  }
-  
-  /* Mensajes */
-  .error-message {
-    color: #e74c3c;
-    font-weight: bold;
-    margin: 10px 0;
-    text-align: center;
-  }
-  
-  .loading-message {
-    color: #3498db;
-    font-weight: bold;
-    margin: 10px 0;
-    text-align: center;
-  }
-  
-  /* Lista de cuestionarios pendientes */
-  .pending-questionnaires-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .pending-questionnaires-list li {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin: 10px 0;
-    padding: 15px 20px;
-    font-size: 18px;
-    color: #555;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  .pending-questionnaires-list li:hover {
-    background-color: #f0f0f0;
-    transform: scale(1.02);
-  }
-  
-  .pending-questionnaires-list li:active {
-    background-color: #eaeaea;
-    transform: scale(0.98);
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7dc6f, #3498db); /* Degradado amarillo y azul */
+  color: #2d3436; /* Texto gris oscuro */
+  font-family: 'Roboto', sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.complete-questionnaires-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #2d3436; /* Texto gris oscuro */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.error-message {
+  color: #e74c3c; /* Rojo claro para los mensajes de error */
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.pending-questionnaires-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.pending-questionnaires-list li {
+  background-color: #3498db; /* Azul principal */
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 15px 20px;
+  margin: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.pending-questionnaires-list li:hover {
+  background-color: #f7dc6f; /* Amarillo para hover */
+  color: #2d3436; /* Texto gris oscuro */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.pending-questionnaires-list li:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pending-questionnaires-list li:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5); /* Azul claro de enfoque */
+}
+
+.pending-questionnaires-list li:disabled {
+  background-color: #b2bec3; /* Gris claro para elementos deshabilitados */
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+p {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}

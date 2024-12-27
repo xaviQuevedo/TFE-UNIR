@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/BarthelIndex.css";
+import "../../styles/questionnaires/BarthelIndex.css";
 
 const BarthelIndex = ({ question, selectedValue, onSelect }) => {
   const renderOptions = () => {

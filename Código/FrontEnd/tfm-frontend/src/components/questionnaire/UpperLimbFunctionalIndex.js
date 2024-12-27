@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/UpperLimbFunctionalIndex.css";
+import "../../styles/questionnaires/UpperLimbFunctionalIndex.css";
 
 const UpperLimbFunctionalIndex = ({ question, selectedValue, onSelect }) => {
   const renderOptions = () => {

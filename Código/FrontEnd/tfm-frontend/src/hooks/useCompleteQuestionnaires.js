@@ -5,7 +5,7 @@ const useCompleteQuestionnaires = () => {
   const [pendingQuestionnaires, setPendingQuestionnaires] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState("");
+  const [success] = useState("");
   const [currentQuestionnaire, setCurrentQuestionnaire] = useState(null);
 
   useEffect(() => {
@@ -14,9 +14,12 @@ const useCompleteQuestionnaires = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const patientId = localStorage.getItem("id");
-        const response = await patientService.get(`/patients/${patientId}/pending-questionnaires`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await patientService.get(
+          `/patients/${patientId}/pending-questionnaires`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setPendingQuestionnaires(response.data);
         setLoading(false);
       } catch (err) {

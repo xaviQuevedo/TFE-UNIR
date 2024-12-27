@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/EmojiScale.css";
+import "../../styles/questionnaires/EmojiScale.css";
 
 const EmojiScale = ({ options, selectedValue, onSelect }) => {
   const renderEmoji = (key) => {

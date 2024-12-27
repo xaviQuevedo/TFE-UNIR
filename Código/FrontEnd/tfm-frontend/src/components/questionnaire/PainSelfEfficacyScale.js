@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/PainSelfEfficacyScale.css";
+import "../../styles/questionnaires/PainSelfEfficacyScale.css";
 
 const PainSelfEfficacyScale = ({ question, selectedValue, onSelect }) => {
   const renderOptions = () => {

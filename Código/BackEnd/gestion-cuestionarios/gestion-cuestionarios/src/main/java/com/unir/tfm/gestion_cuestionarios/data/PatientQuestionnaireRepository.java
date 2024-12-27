@@ -14,4 +14,6 @@ public interface PatientQuestionnaireRepository extends JpaRepository<PatientQue
 
     Optional<PatientQuestionnaire> findByPatientIdAndQuestionnaireId(Long patientId, Long questionnaireId);
 
+    List<PatientQuestionnaire> findByPatientId(Long patientId);
+
 }

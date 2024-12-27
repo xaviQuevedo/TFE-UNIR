@@ -27,14 +27,31 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public void submitQuestionnaire(Long questionnaireId, Long patientId, Map<String, List<ResponseDto>> responses) {
         try {
-
-            // Llamar al cliente con los datos correctos
+            log.info("Submitting questionnaire responses for patientId: {}, questionnaireId: {}", patientId,
+                    questionnaireId);
             questionnaireClient.submitAnswers(questionnaireId, patientId, responses);
-
-        } catch (Exception e) {
-            log.error("Error al enviar respuestas al cliente: {}", e.getMessage());
-
-            throw new RuntimeException("Error al procesar las respuestas del cuestionario", e);
+        } catch (RuntimeException e) {
+            log.error("Error al procesar las respuestas del cuestionario: {}", e.getMessage());
+            throw e; // Re-lanzar la excepción para que el controlador la capture
         }
     }
+
+    @Override
+    public Double calculatePatientProgress(Long patientId, Long questionnaireId) {
+        log.info("Calculating progress for patientId: {}, questionnaireId: {}", patientId, questionnaireId);
+        return questionnaireClient.getPatientProgress(patientId, questionnaireId);
+    }
+
+    @Override
+    public List<QuestionnaireDto> getCompletedQuestionnaires(Long patientId) {
+        log.info("Fetching completed questionnaires for patientId: {}", patientId);
+        return questionnaireClient.getCompletedQuestionnaires(patientId);
+    }
+
+    @Override
+    public Map<String, List<QuestionnaireDto>> getQuestionnaireResponses(Long patientId, Long questionnaireId) {
+        log.info("Fetching questionnaire responses for patientId: {}, questionnaireId: {}", patientId, questionnaireId);
+        return questionnaireClient.getQuestionnaireResponses(patientId, questionnaireId);
+    }
+
 }

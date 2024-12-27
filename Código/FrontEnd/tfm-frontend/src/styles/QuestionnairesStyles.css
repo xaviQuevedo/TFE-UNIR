@@ -1,0 +1,186 @@
+/* Estilos generales para los cuestionarios */
+.question-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f0f9ff; /* Azul claro */
+    border: 2px solid #007bff; /* Azul principal */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: "Arial", sans-serif;
+  }
+  
+  /* Títulos generales */
+  .question-container h1,
+  .question-container h2 {
+    text-align: center;
+    color: #007bff; /* Azul principal */
+    margin-bottom: 15px;
+  }
+  
+  .question-container h1 {
+    font-size: 24px;
+  }
+  
+  .question-container h2 {
+    font-size: 20px;
+    color: #0056b3; /* Azul oscuro */
+  }
+  
+  /* Botones generales */
+  .question-container button {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .question-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  .question-container button:disabled {
+    background-color: #d6e9ff; /* Azul pálido */
+    cursor: not-allowed;
+  }
+  
+  /* Opciones de cuestionarios */
+  .options-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .option-button {
+    padding: 15px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    background-color: white;
+    color: #007bff;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .option-button:hover {
+    background-color: #ffd700; /* Amarillo */
+    color: #333;
+  }
+  
+  .option-button.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+  }
+  
+  /* Escala Berg */
+  .berg-scale-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .berg-scale-option {
+    padding: 8px 15px;
+    font-size: 14px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .berg-scale-option:hover,
+  .berg-scale-option.selected {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  /* Escala Emoji */
+  .emoji-scale-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .emoji-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .emoji-option:hover {
+    border-color: #ffd700;
+  }
+  
+  .emoji-option.selected {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .emoji-option .emoji {
+    font-size: 30px;
+  }
+  
+  .emoji-option .emoji-text {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  /* Progreso visual */
+  .progress-bar-container {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .progress-bar {
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+  }
+  
+  .progress-step {
+    flex: 1;
+    height: 15px;
+    background-color: #d6e9ff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .progress-step:hover {
+    background-color: #ffd700;
+  }
+  
+  .progress-step.selected {
+    background-color: #007bff;
+  }
+  
+  /* Pantallas pequeñas */
+  @media (max-width: 768px) {
+    .options-container {
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+  
+    .option-button {
+      font-size: 12px;
+      padding: 10px;
+    }
+  
+    .emoji-option .emoji {
+      font-size: 24px;
+    }
+  }
+  
