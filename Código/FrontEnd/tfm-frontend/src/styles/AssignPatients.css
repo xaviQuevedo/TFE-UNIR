@@ -1,29 +1,120 @@
+/* Contenedor principal */
 .assign-patients-container {
-    padding: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .patients-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .patients-list li {
-    margin: 5px 0;
-  }
-  
-  .assign-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .assign-button:hover {
-    background-color: #0056b3;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7dc6f, #3498db); /* Degradado amarillo y azul */
+  font-family: 'Roboto', sans-serif;
+  padding: 2rem;
+}
+
+/* Tarjeta de contenido */
+.assign-patients-card {
+  background: #ffffff; /* Fondo blanco */
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Título */
+.assign-patients-card h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Grupo de formulario */
+.form-group {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 1rem;
+  color: #333333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Select de fisioterapeutas */
+.form-group select {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group select:focus {
+  border-color: #2575fc;
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.3);
+}
+
+/* Lista de pacientes */
+.patients-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.patients-list li {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 1rem;
+  text-align: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.patients-list label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #333333;
+}
+
+/* Botón de asignar */
+.assign-button {
+  background: #2575fc;
+  color: #ffffff;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+.assign-button:hover {
+  background: #1b5fd6;
+  transform: translateY(-2px);
+}
+
+.assign-button:disabled {
+  background: #a5c8fc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Mensajes de carga y error */
+p {
+  font-size: 1rem;
+  color: #333333;
+  text-align: center;
+}

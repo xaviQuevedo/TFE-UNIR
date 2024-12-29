@@ -9,24 +9,30 @@ const PatientDashboard = () => {
     navigate("/patient/pending-questionnaires");
   };
 
-  const handleViewProgress = () => {
-    navigate("/patient/progress");
-  };
-
   const handleViewCompletedQuestionnaires = () => {
     navigate("/patient/completed-questionnaires");
   };
 
   return (
-    <div className="patient-dashboard-container">
-      <h1>Dashboard del Paciente</h1>
-      <button onClick={handleViewPendingQuestionnaires}>
-        Ver Cuestionarios Pendientes
-      </button>
-      <button onClick={handleViewProgress}>Ver Progreso</button>
-      <button onClick={handleViewCompletedQuestionnaires}>
-        Ver Cuestionarios Completados
-      </button>
+    <div className="admin-dashboard-container">
+      <div className="admin-dashboard-card">
+        <h1 className="admin-dashboard-title">Dashboard del Paciente</h1>
+        <p>Gestiona tus cuestionarios y monitorea tu progreso.</p>
+        <div className="admin-dashboard-buttons">
+          <button
+            className="admin-dashboard-button"
+            onClick={handleViewPendingQuestionnaires}
+          >
+            Ver Cuestionarios Pendientes
+          </button>
+          <button
+            className="admin-dashboard-button"
+            onClick={handleViewCompletedQuestionnaires}
+          >
+            Ver progreso por cuestionario
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

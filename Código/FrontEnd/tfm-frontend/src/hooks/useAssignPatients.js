@@ -18,6 +18,7 @@ const useAssignPatients = () => {
         const response = await physiotherapistService.get("/assignments/physiotherapists", {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log("Fisioterapeutas recibidos:", response.data); // Log de fisioterapeutas
         setPhysiotherapists(response.data);
         setLoading(false);
       } catch (error) {
@@ -39,6 +40,7 @@ const useAssignPatients = () => {
         `/assignments/unassigned-patients?physiotherapistId=${physiotherapistId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      console.log("Pacientes no asignados recibidos:", response.data); // Log de pacientes
       setPatients(response.data);
       setLoading(false);
     } catch (error) {
@@ -54,9 +56,11 @@ const useAssignPatients = () => {
     setSelectedPatients([]); // Limpiar selección de pacientes
     if (id) {
       await fetchUnassignedPatients(id); // Actualizar pacientes disponibles
+    } else {
+      setPatients([]); // Vaciar lista de pacientes si no hay fisioterapeuta seleccionado
     }
   };
-
+  
   // Manejar asignación de pacientes
   const handleAssign = async (navigate) => {
     if (!selectedPhysiotherapist || selectedPatients.length === 0) {
@@ -66,12 +70,18 @@ const useAssignPatients = () => {
 
     try {
       const token = localStorage.getItem("token");
+      const payload = {
+        physiotherapistId: selectedPhysiotherapist,
+        patientIds: selectedPatients,
+      };
+      console.log("Datos enviados para la asignación:", payload); // Log del payload
 
-      await physiotherapistService.post(
+      const response = await physiotherapistService.post(
         "/assignments/assign",
-        { physiotherapistId: selectedPhysiotherapist, patientIds: selectedPatients },
+        payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      console.log("Respuesta de asignación:", response.data); // Log de la respuesta
 
       alert("Pacientes asignados correctamente.");
       setSelectedPhysiotherapist("");
@@ -80,7 +90,6 @@ const useAssignPatients = () => {
     } catch (error) {
       setError(error);
 
-      // Manejo del error 409 (conflicto de asignación)
       if (error.response && error.response.status === 409) {
         alert("Ya existe una asignación entre el paciente seleccionado y este fisioterapeuta.");
         if (selectedPhysiotherapist) {

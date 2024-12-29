@@ -1,30 +1,43 @@
+.chart-container-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Altura completa de la ventana */
+  background-color: #5152b6; /* Fondo neutro */
+}
+
 .chart-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 20px auto;
-    text-align: center;
-  }
-  
-  .chart-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    font-family: Arial, sans-serif;
-    color: #333;
-  }
-  
-  .loading-message,
-  .error-message,
-  .no-data-message {
-    text-align: center;
-    font-size: 16px;
-    color: #666;
-  }
-  
-  .error-message {
-    color: red;
-  }
-  
+  width: 80%; /* Ajusta el ancho para pantallas más pequeñas */
+  max-width: 800px;
+  padding: 20px;
+  background: linear-gradient(135deg, #e8f5e9, #f1f8e9); /* Verde suave */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Centra el contenido dentro del contenedor */
+}
+
+.chart-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #388e3c; /* Verde fuerte */
+  margin-bottom: 20px;
+}
+
+.loading-message,
+.error-message,
+.no-data-message {
+  font-size: 18px;
+  color: #37474f; /* Gris oscuro */
+}
+
+.loading-message {
+  color: #0288d1; /* Azul */
+}
+
+.error-message {
+  color: #d32f2f; /* Rojo */
+}
+
+.no-data-message {
+  color: #afb42b; /* Amarillo oliva */
+}

@@ -56,11 +56,11 @@ const QuestionnaireResponsesChart = ({ patientId, questionnaireId }) => {
       {
         label: "Progreso del Score",
         data: scores,
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 8,
+        backgroundColor: "rgba(102, 187, 106, 0.2)", // Verde claro
+        borderColor: "rgba(56, 142, 60, 1)", // Verde fuerte
+        borderWidth: 3,
+        pointRadius: 6,
+        pointHoverRadius: 10,
         tension: 0.4,
         fill: true,
       },
@@ -73,14 +73,22 @@ const QuestionnaireResponsesChart = ({ patientId, questionnaireId }) => {
       legend: {
         display: true,
         position: "top",
+        labels: {
+          color: "#37474F", // Texto oscuro
+          font: {
+            size: 14,
+            weight: "bold",
+          },
+        },
+        onClick: null,
       },
       tooltip: {
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
         titleColor: "#fff",
         bodyColor: "#fff",
         borderWidth: 1,
         borderColor: "rgba(255, 255, 255, 0.5)",
-        cornerRadius: 6,
+        cornerRadius: 8,
       },
     },
     scales: {
@@ -88,25 +96,44 @@ const QuestionnaireResponsesChart = ({ patientId, questionnaireId }) => {
         title: {
           display: true,
           text: "Fechas",
+          color: "#37474F",
+          font: {
+            size: 14,
+            weight: "bold",
+          },
         },
-        beginAtZero: false,
+        ticks: {
+          color: "#37474F",
+        },
       },
       y: {
         title: {
           display: true,
           text: "Score",
+          color: "#37474F",
+          font: {
+            size: 14,
+            weight: "bold",
+          },
         },
-        beginAtZero: true,
+        ticks: {
+          color: "#37474F",
+        },
       },
     },
   };
 
   return (
-    <div className="chart-container">
-      <h2 className="chart-title">Progreso del Score</h2>
-      <Line data={data} options={options} />
+    <div className="chart-container-wrapper">
+      <div className="chart-container">
+        <h2 className="chart-title">Progreso</h2>
+        <Line data={data} options={options} />
+      </div>
     </div>
   );
 };
+
+
+
 
 export default QuestionnaireResponsesChart;

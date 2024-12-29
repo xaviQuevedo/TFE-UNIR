@@ -15,15 +15,19 @@ const CompleteQuestionnaires = () => {
 
   return (
     <div className="complete-questionnaires-container">
-      <h1>Cuestionarios Pendientes</h1>
+      <h1 className="complete-questionnaires-title">Cuestionarios Pendientes</h1>
       {error && <p className="error-message">{error}</p>}
       {loading ? (
-        <p>Cargando...</p>
+        <p className="loading-message">Cargando...</p>
       ) : (
         <ul className="pending-questionnaires-list">
           {pendingQuestionnaires.map((q) => (
-            <li key={q.id} onClick={() => handleQuestionnaireSelection(q)}>
-              {q.title}
+            <li
+              key={q.id}
+              className="questionnaire-item"
+              onClick={() => handleQuestionnaireSelection(q)}
+            >
+              <span className="questionnaire-title">{q.title}</span>
             </li>
           ))}
         </ul>

@@ -1,0 +1,92 @@
+/* Contenedor principal */
+.completed-questionnaires-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh; /* Asegura que se use el alto mínimo en lugar de forzar 100vh */
+    background: linear-gradient(135deg, #a8e063, #56ab2f); /* Degradado de verde claro a verde intenso */
+    font-family: 'Roboto', sans-serif;
+    padding: 2rem 1rem; /* Asegura espacio interno sin overflow */
+    box-sizing: border-box; /* Incluye padding en el tamaño total */
+  }
+  
+  /* Tarjeta */
+  .completed-questionnaires-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    overflow: hidden; /* Evita desbordamientos internos */
+  }
+  
+  /* Título */
+  .completed-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Mensajes */
+  .loading-message,
+  .error-message {
+    font-size: 1rem;
+    color: #555555;
+    margin: 1rem 0;
+  }
+  
+  /* Lista de cuestionarios */
+  .completed-questionnaires-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 70vh; /* Limita la altura para evitar overflow */
+    overflow-y: auto; /* Habilita desplazamiento interno si es necesario */
+  }
+  
+  /* Estilo de los items */
+  .questionnaire-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f9f9f9;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+  }
+  
+  .questionnaire-item:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  /* Título del cuestionario */
+  .questionnaire-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333333;
+  }
+  
+  /* Botón */
+  .view-responses-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    background: #34a853; /* Verde enfocado en recuperación */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  .view-responses-button:hover {
+    background: #2c8b46;
+    transform: translateY(-2px);
+  }
+  

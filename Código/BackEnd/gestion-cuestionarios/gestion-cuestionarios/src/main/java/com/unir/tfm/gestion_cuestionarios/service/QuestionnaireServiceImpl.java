@@ -1,6 +1,8 @@
 package com.unir.tfm.gestion_cuestionarios.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +30,9 @@ import com.unir.tfm.gestion_cuestionarios.model.response.QuestionResponseDto;
 import com.unir.tfm.gestion_cuestionarios.model.response.QuestionnaireResponse;
 import com.unir.tfm.gestion_cuestionarios.model.response.QuestionnaireResponseDto;
 import com.unir.tfm.gestion_cuestionarios.model.response.ResponseDto;
+
+import java.util.Comparator;
+
 
 @Service
 public class QuestionnaireServiceImpl implements QuestionnaireService {
@@ -80,45 +85,52 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         }
 
         @Override
-        public void submitAnswerAndUpdateStatus(Long questionnaireId, Long patientId,
-                        Map<String, List<ResponseDto>> responses) {
-                log.info("Procesando respuestas. Patient ID: {}, Questionnaire ID: {}", patientId, questionnaireId);
+public void submitAnswerAndUpdateStatus(Long questionnaireId, Long patientId, Map<String, List<ResponseDto>> responses) {
+    log.info("Procesando respuestas. Patient ID: {}, Questionnaire ID: {}", patientId, questionnaireId);
 
-                // Obtener las respuestas de la solicitud
-                List<ResponseDto> responseList = responses.get("responses");
-                if (responseList == null || responseList.isEmpty()) {
-                        throw new RuntimeException("No se encontraron respuestas en la solicitud");
-                }
+    // Obtener las respuestas de la solicitud
+    List<ResponseDto> responseList = responses.get("responses");
+    if (responseList == null || responseList.isEmpty()) {
+        throw new RuntimeException("No se encontraron respuestas en la solicitud");
+    }
 
-                log.info("Respuestas recibidas: {}", responseList);
+    log.info("Respuestas recibidas: {}", responseList);
 
-                // Validar que el cuestionario esté asignado al paciente
-                PatientQuestionnaire patientQuestionnaire = patientQuestionnaireRepository
-                                .findByPatientIdAndQuestionnaireId(patientId, questionnaireId)
-                                .orElseThrow(() -> new RuntimeException("Cuestionario no asignado encontrado"));
+    // Validar que el cuestionario esté asignado al paciente (pueden haber múltiples registros)
+    List<PatientQuestionnaire> patientQuestionnaires = patientQuestionnaireRepository
+            .findByPatientIdAndQuestionnaireId(patientId, questionnaireId);
 
-                log.info("Cuestionario asignado encontrado: {}", patientQuestionnaire);
+    if (patientQuestionnaires.isEmpty()) {
+        throw new RuntimeException("Cuestionario no asignado encontrado");
+    }
 
-                // Guardar las respuestas
-                for (ResponseDto response : responseList) {
-                        QuestionnaireResponse responseEntity = new QuestionnaireResponse();
-                        responseEntity.setQuestionnaireId(questionnaireId);
-                        responseEntity.setQuestionId(response.getQuestionId());
-                        responseEntity.setPatientId(patientId);
-                        responseEntity.setAnswer(response.getAnswer());
-                        responseEntity.setCreatedAt(new Date());
-                        questionnaireResponseRepository.save(responseEntity);
+    // Seleccionar el registro más reciente (o aplicar lógica de negocio específica)
+    PatientQuestionnaire patientQuestionnaire = patientQuestionnaires.stream()
+            .max(Comparator.comparing(PatientQuestionnaire::getAssignedAt)) // Elegir por fecha de asignación más reciente
+            .orElseThrow(() -> new RuntimeException("No se encontró un cuestionario válido"));
 
-                        log.info("Respuesta guardada: {}", responseEntity);
-                }
+    log.info("Cuestionario asignado encontrado: {}", patientQuestionnaire);
 
-                // Actualizar estado del cuestionario asignado
-                patientQuestionnaire.setStatus("completed");
-                patientQuestionnaire.setUpdatedAt(new Date());
-                patientQuestionnaireRepository.save(patientQuestionnaire);
+    // Guardar las respuestas
+    for (ResponseDto response : responseList) {
+        QuestionnaireResponse responseEntity = new QuestionnaireResponse();
+        responseEntity.setQuestionnaireId(questionnaireId);
+        responseEntity.setQuestionId(response.getQuestionId());
+        responseEntity.setPatientId(patientId);
+        responseEntity.setAnswer(response.getAnswer());
+        responseEntity.setCreatedAt(new Date());
+        questionnaireResponseRepository.save(responseEntity);
 
-                log.info("Estado del cuestionario actualizado a 'completed'");
-        }
+        log.info("Respuesta guardada: {}", responseEntity);
+    }
+
+    // Actualizar estado del cuestionario asignado
+    patientQuestionnaire.setStatus("completed");
+    patientQuestionnaire.setUpdatedAt(new Date());
+    patientQuestionnaireRepository.save(patientQuestionnaire);
+
+    log.info("Estado del cuestionario actualizado a 'completed'");
+}
 
         @Override
         public QuestionnaireResponseDto getQuestionnaire(Long questionnaireId) {
@@ -160,6 +172,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
                                 .collect(Collectors.toList());
         }
 
+        // metodo a mantener y funcionando correctamente
         @Override
         public List<QuestionnaireResponseDto> getNotAssignedQuestionnaires(Long patientId) {
                 // Obtener IDs de cuestionarios asignados al paciente con estado "completed"
@@ -169,12 +182,22 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
                                 .map(pq -> pq.getQuestionnaire().getId())
                                 .collect(Collectors.toList());
 
-                // Filtrar cuestionarios no asignados o completados
+                // Obtener IDs de cuestionarios asignados al paciente con estado "pending"
+                List<Long> assignedPendingQuestionnaireIds = patientQuestionnaireRepository
+                                .findByPatientIdAndStatus(patientId, "pending")
+                                .stream()
+                                .map(pq -> pq.getQuestionnaire().getId())
+                                .collect(Collectors.toList());
+
+                // Filtrar cuestionarios no asignados o con estado "completed"
                 List<Questionnaire> notAssignedQuestionnaires = questionnaireRepository.findAll()
                                 .stream()
-                                .filter(q -> !assignedCompletedQuestionnaireIds.contains(q.getId())
-                                                || assignedCompletedQuestionnaireIds.contains(q.getId())) // Incluir
-                                                                                                          // completados
+                                .filter(q -> !assignedPendingQuestionnaireIds.contains(q.getId()) // Excluir pendientes
+                                                && (!assignedCompletedQuestionnaireIds.contains(q.getId()) // Incluir no
+                                                                                                           // asignados
+                                                                || assignedCompletedQuestionnaireIds
+                                                                                .contains(q.getId()))) // Incluir
+                                                                                                       // completados
                                 .collect(Collectors.toList());
 
                 // Mapear a DTOs
@@ -276,37 +299,48 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
         @Override
         public Map<String, List<QuestionnaireResponse>> getQuestionnaireResponsesGroupedByQuestion(Long questionnaireId,
-                        Long patientId) {
-                // Validar que el cuestionario esté asignado al paciente
-                patientQuestionnaireRepository.findByPatientIdAndQuestionnaireId(patientId, questionnaireId)
-                                .orElseThrow(() -> new RuntimeException("Cuestionario no asignado encontrado"));
-
-                // Obtener todas las respuestas del cuestionario para el paciente
-                List<QuestionnaireResponse> responses = questionnaireResponseRepository
-                                .findByPatientIdAndQuestionnaireIdOrderByCreatedAtAsc(patientId, questionnaireId);
-
-                if (responses.isEmpty()) {
-                        throw new RuntimeException("No se encontraron respuestas para el cuestionario");
-                }
-
-                // Agrupar respuestas por pregunta
-                return responses.stream()
-                                .collect(Collectors.groupingBy(r -> "Pregunta ID: " + r.getQuestionId()));
+                Long patientId) {
+            // Validar que el cuestionario esté asignado al paciente
+            List<PatientQuestionnaire> patientQuestionnaires = patientQuestionnaireRepository
+                    .findByPatientIdAndQuestionnaireId(patientId, questionnaireId);
+        
+            if (patientQuestionnaires.isEmpty()) {
+                throw new RuntimeException("Cuestionario no asignado encontrado");
+            }
+        
+            // Obtener todas las respuestas del cuestionario para el paciente
+            List<QuestionnaireResponse> responses = questionnaireResponseRepository
+                    .findByPatientIdAndQuestionnaireIdOrderByCreatedAtAsc(patientId, questionnaireId);
+        
+            if (responses.isEmpty()) {
+                throw new RuntimeException("No se encontraron respuestas para el cuestionario");
+            }
+        
+            // Agrupar respuestas por pregunta
+            return responses.stream()
+                    .collect(Collectors.groupingBy(r -> "Pregunta ID: " + r.getQuestionId()));
         }
+        
 
         @Override
-        public List<QuestionnaireResponseDto> getCompletedQuestionnaires(Long patientId) {
-                List<Questionnaire> completedQuestionnaires = patientQuestionnaireRepository
-                                .findByPatientIdAndStatus(patientId, "completed")
-                                .stream()
-                                .map(PatientQuestionnaire::getQuestionnaire)
-                                .collect(Collectors.toList());
+public List<QuestionnaireResponseDto> getCompletedQuestionnaires(Long patientId) {
+    // Obtener todos los cuestionarios completados
+    List<Questionnaire> completedQuestionnaires = patientQuestionnaireRepository
+            .findByPatientIdAndStatus(patientId, "completed")
+            .stream()
+            .map(PatientQuestionnaire::getQuestionnaire)
+            .collect(Collectors.toList());
 
-                return completedQuestionnaires.stream()
-                                .map(q -> new QuestionnaireResponseDto(q.getId(), q.getTitle(), q.getDescription(),
-                                                null))
-                                .collect(Collectors.toList());
-        }
+    // Filtrar cuestionarios únicos por su ID
+    Map<Long, Questionnaire> uniqueQuestionnaires = completedQuestionnaires.stream()
+            .collect(Collectors.toMap(Questionnaire::getId, q -> q, (existing, replacement) -> existing));
+
+    // Convertir los cuestionarios únicos a DTOs
+    return uniqueQuestionnaires.values().stream()
+            .map(q -> new QuestionnaireResponseDto(q.getId(), q.getTitle(), q.getDescription(), null))
+            .collect(Collectors.toList());
+}
+
 
         @Override
         public Map<Date, List<CustomResponseDto>> getQuestionnaireResponsesGroupedByDate(Long questionnaireId,
@@ -341,47 +375,49 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         }
 
         @Override
-        public List<Map<String, Object>> getScoresBySession(Long questionnaireId, Long patientId) {
-                // Obtener todas las respuestas del cuestionario para el paciente
-                List<QuestionnaireResponse> responses = questionnaireResponseRepository
-                                .findByPatientIdAndQuestionnaireIdOrderByCreatedAt(patientId, questionnaireId);
+public List<Map<String, Object>> getScoresBySession(Long questionnaireId, Long patientId) {
+    // Obtener todas las respuestas del cuestionario para el paciente
+    List<QuestionnaireResponse> responses = questionnaireResponseRepository
+            .findByPatientIdAndQuestionnaireIdOrderByCreatedAt(patientId, questionnaireId);
 
-                if (responses.isEmpty()) {
-                        throw new RuntimeException("No se encontraron respuestas para el cuestionario.");
-                }
+    if (responses.isEmpty()) {
+        throw new RuntimeException("No se encontraron respuestas para el cuestionario.");
+    }
 
-                // Agrupar respuestas por fecha de creación
-                Map<Date, List<QuestionnaireResponse>> groupedByDate = responses.stream()
-                                .collect(Collectors.groupingBy(QuestionnaireResponse::getCreatedAt));
+    // Agrupar respuestas por día (ignorar tiempo)
+    Map<LocalDate, List<QuestionnaireResponse>> groupedByDate = responses.stream()
+            .collect(Collectors.groupingBy(response -> 
+                response.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            ));
 
-                // Calcular un score por cada fecha/grupo de respuestas
-                List<Map<String, Object>> scoresBySession = groupedByDate.entrySet().stream()
-                                .map(entry -> {
-                                        Date sessionDate = entry.getKey();
-                                        List<QuestionnaireResponse> sessionResponses = entry.getValue();
+    // Calcular un score por cada día
+    List<Map<String, Object>> scoresBySession = groupedByDate.entrySet().stream()
+            .map(entry -> {
+                LocalDate sessionDate = entry.getKey();
+                List<QuestionnaireResponse> sessionResponses = entry.getValue();
 
-                                        // Calcular el score sumando las respuestas numéricas
-                                        int score = sessionResponses.stream()
-                                                        .mapToInt(response -> {
-                                                                try {
-                                                                        return Integer.parseInt(response.getAnswer());
-                                                                } catch (NumberFormatException e) {
-                                                                        return 0; // Ignorar respuestas no numéricas
-                                                                }
-                                                        })
-                                                        .sum();
+                // Calcular el score sumando las respuestas numéricas
+                int score = sessionResponses.stream()
+                        .mapToInt(response -> {
+                            try {
+                                return Integer.parseInt(response.getAnswer());
+                            } catch (NumberFormatException e) {
+                                return 0; // Ignorar respuestas no numéricas
+                            }
+                        })
+                        .sum();
 
-                                        // Crear un objeto con la fecha y el score
-                                        Map<String, Object> sessionScore = new HashMap<>();
-                                        sessionScore.put("date", sessionDate);
-                                        sessionScore.put("score", score);
-                                        return sessionScore;
-                                })
-                                .sorted((a, b) -> ((Date) a.get("date")).compareTo((Date) b.get("date"))) // Ordenar por
-                                                                                                          // fecha
-                                .collect(Collectors.toList());
+                // Crear un objeto con la fecha y el score
+                Map<String, Object> sessionScore = new HashMap<>();
+                sessionScore.put("date", sessionDate);
+                sessionScore.put("score", score);
+                return sessionScore;
+            })
+            .sorted(Comparator.comparing(a -> (LocalDate) a.get("date"))) // Ordenar por fecha
+            .collect(Collectors.toList());
 
-                return scoresBySession;
-        }
+    return scoresBySession;
+}
+
 
 }

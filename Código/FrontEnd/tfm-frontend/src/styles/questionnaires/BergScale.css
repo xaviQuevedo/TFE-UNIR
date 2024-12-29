@@ -2,17 +2,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 5px; /* Espacio entre botones */
+    gap: 5px; 
     margin: 15px 0;
   }
   
   .berg-scale-option {
-    padding: 5px 10px; /* Tamaño más compacto */
+    padding: 5px 10px; 
     border: 1px solid #007bff;
     background-color: white;
     color: #007bff;
     border-radius: 3px;
-    font-size: 14px; /* Texto más pequeño */
+    font-size: 14px; 
     cursor: pointer;
     transition: all 0.3s ease;
   }
@@ -30,11 +30,11 @@
   
   @media (max-width: 600px) {
     .berg-scale-container {
-      flex-wrap: wrap; /* Opciones envuelven si la pantalla es pequeña */
+      flex-wrap: wrap; 
     }
   
     .berg-scale-option {
-      margin-bottom: 5px; /* Espacio adicional en dispositivos pequeños */
+      margin-bottom: 5px; 
     }
   }
   

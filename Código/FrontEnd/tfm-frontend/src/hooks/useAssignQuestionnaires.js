@@ -44,34 +44,38 @@ const useAssignQuestionnaires = () => {
   }, []);
 
   // Actualizar cuestionarios disponibles cuando cambie el paciente seleccionado
-  useEffect(() => {
-    const fetchAvailableQuestionnaires = async () => {
-      if (!selectedPatient) {
-        setQuestionnaires([]);
-        return;
-      }
+  // Actualizar cuestionarios disponibles cuando cambie el paciente seleccionado
+useEffect(() => {
+  const fetchAvailableQuestionnaires = async () => {
+    if (!selectedPatient) {
+      setQuestionnaires([]);
+      return;
+    }
 
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
 
-        const response = await questionnaireService.get(
-          `/questionnaires/not-assigned/${selectedPatient}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+      const response = await questionnaireService.get(
+        `/questionnaires/not-assigned/${selectedPatient}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-        setQuestionnaires(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Error al cargar los cuestionarios disponibles.");
-        setLoading(false);
-      }
-    };
+      console.log("Datos recibidos del backend (cuestionarios disponibles):", response.data); // Log temporal
+      setQuestionnaires(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error al cargar cuestionarios:", err);
+      setError("Error al cargar los cuestionarios disponibles.");
+      setLoading(false);
+    }
+  };
 
-    fetchAvailableQuestionnaires();
-  }, [selectedPatient]);
+  fetchAvailableQuestionnaires();
+}, [selectedPatient]);
+
 
   const handleAssign = async () => {
     if (!selectedPatient || selectedQuestionnaires.length === 0) {

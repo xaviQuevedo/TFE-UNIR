@@ -1,9 +1,15 @@
 /* Contenedor principal */
+body{
+  background: linear-gradient(135deg, #b2f7ef, #72c2d9); /* Degradado azul agua */
+  margin: 0;
+
+
+}
 .answer-questionnaire-container {
     max-width: 900px;
-    margin: 0 auto;
+    margin: 50px auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background: linear-gradient(135deg, #a8e063, #56ab2f); /* Degradado de verde claro a verde intenso */
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
@@ -11,11 +17,11 @@
   
   /* Título */
   .answer-questionnaire-container h1 {
-    font-size: 26px;
+    font-size: 2rem;
     font-weight: bold;
-    text-align: center;
-    color: #333;
+    color: #2c3e50; /* Azul oscuro */
     margin-bottom: 20px;
+
   }
   
   /* Mensajes de éxito y error */
