@@ -3,6 +3,7 @@ package com.unir.tfm.gestion_cuestionarios.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +34,6 @@ import com.unir.tfm.gestion_cuestionarios.model.response.ResponseDto;
 
 import java.util.Comparator;
 
-
 @Service
 public class QuestionnaireServiceImpl implements QuestionnaireService {
 
@@ -54,6 +54,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
         private static final Logger log = LoggerFactory.getLogger(QuestionnaireServiceImpl.class);
 
+        // No borrar
         @Override
         public void assignQuestionnaire(AssignQuestionnaireRequest request) {
                 // Verificar que el paciente existe
@@ -84,53 +85,96 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
                 }
         }
 
+        // No borrar
         @Override
-public void submitAnswerAndUpdateStatus(Long questionnaireId, Long patientId, Map<String, List<ResponseDto>> responses) {
-    log.info("Procesando respuestas. Patient ID: {}, Questionnaire ID: {}", patientId, questionnaireId);
+        public void submitAnswerAndUpdateStatus(Long questionnaireId, Long patientId,
+                        Map<String, List<ResponseDto>> responses) {
 
-    // Obtener las respuestas de la solicitud
-    List<ResponseDto> responseList = responses.get("responses");
-    if (responseList == null || responseList.isEmpty()) {
-        throw new RuntimeException("No se encontraron respuestas en la solicitud");
-    }
+                // Obtener las respuestas de la solicitud
+                List<ResponseDto> responseList = responses.get("responses");
+                if (responseList == null || responseList.isEmpty()) {
+                        throw new RuntimeException("No se encontraron respuestas en la solicitud");
+                }
+                // Validar que el cuestionario esté asignado al paciente (pueden haber múltiples
+                // registros)
+                List<PatientQuestionnaire> patientQuestionnaires = patientQuestionnaireRepository
+                                .findByPatientIdAndQuestionnaireId(patientId, questionnaireId);
 
-    log.info("Respuestas recibidas: {}", responseList);
+                if (patientQuestionnaires.isEmpty()) {
+                        throw new RuntimeException("Cuestionario no asignado encontrado");
+                }
 
-    // Validar que el cuestionario esté asignado al paciente (pueden haber múltiples registros)
-    List<PatientQuestionnaire> patientQuestionnaires = patientQuestionnaireRepository
-            .findByPatientIdAndQuestionnaireId(patientId, questionnaireId);
+                // Seleccionar el registro más reciente (o aplicar lógica de negocio específica)
+                PatientQuestionnaire patientQuestionnaire = patientQuestionnaires.stream()
+                                .max(Comparator.comparing(PatientQuestionnaire::getAssignedAt)) // Elegir por fecha de
+                                                                                                // asignación más
+                                                                                                // reciente
+                                .orElseThrow(() -> new RuntimeException("No se encontró un cuestionario válido"));
 
-    if (patientQuestionnaires.isEmpty()) {
-        throw new RuntimeException("Cuestionario no asignado encontrado");
-    }
+                // Guardar las respuestas
+                List<QuestionnaireResponse> responseEntities = new ArrayList<>();
+                System.out.println("responseList: " + responseList);
 
-    // Seleccionar el registro más reciente (o aplicar lógica de negocio específica)
-    PatientQuestionnaire patientQuestionnaire = patientQuestionnaires.stream()
-            .max(Comparator.comparing(PatientQuestionnaire::getAssignedAt)) // Elegir por fecha de asignación más reciente
-            .orElseThrow(() -> new RuntimeException("No se encontró un cuestionario válido"));
+                for (ResponseDto response : responseList) {
+                        QuestionnaireResponse responseEntity = new QuestionnaireResponse();
+                        responseEntity.setQuestionnaireId(questionnaireId);
+                        responseEntity.setQuestionId(response.getQuestionId());
+                        responseEntity.setPatientId(patientId);
+                        responseEntity.setAnswer(response.getAnswer());
+                        responseEntity.setCreatedAt(new Date());
+                        questionnaireResponseRepository.save(responseEntity);
 
-    log.info("Cuestionario asignado encontrado: {}", patientQuestionnaire);
+                        responseEntities.add(responseEntity);
 
-    // Guardar las respuestas
-    for (ResponseDto response : responseList) {
-        QuestionnaireResponse responseEntity = new QuestionnaireResponse();
-        responseEntity.setQuestionnaireId(questionnaireId);
-        responseEntity.setQuestionId(response.getQuestionId());
-        responseEntity.setPatientId(patientId);
-        responseEntity.setAnswer(response.getAnswer());
-        responseEntity.setCreatedAt(new Date());
-        questionnaireResponseRepository.save(responseEntity);
+                }
+                // Calcular la puntuación total si es necesario
+                Integer score = calculateScore(questionnaireId, responseEntities);
+                if (score != null) {
+                        patientQuestionnaire.setScore(score);
+                }
 
-        log.info("Respuesta guardada: {}", responseEntity);
-    }
+                // Actualizar estado del cuestionario asignado
+                patientQuestionnaire.setStatus("in_progress");
+                patientQuestionnaire.setUpdatedAt(new Date());
+                patientQuestionnaireRepository.save(patientQuestionnaire);
 
-    // Actualizar estado del cuestionario asignado
-    patientQuestionnaire.setStatus("completed");
-    patientQuestionnaire.setUpdatedAt(new Date());
-    patientQuestionnaireRepository.save(patientQuestionnaire);
+                log.info("Estado del cuestionario actualizado a 'completed'");
+        }
 
-    log.info("Estado del cuestionario actualizado a 'completed'");
-}
+        // No borrar
+        @Override
+        public Integer calculateScore(Long questionnaireId, List<QuestionnaireResponse> responses) {
+                // Obtener el cuestionario
+                Questionnaire questionnaire = questionnaireRepository.findById(questionnaireId)
+                                .orElseThrow(() -> new RuntimeException(
+                                                "Cuestionario no encontrado para el ID: " + questionnaireId));
+
+                // Identificar el cuestionario específico y aplicar la lógica de cálculo
+                switch (questionnaire.getTitle()) {
+                        case "Escala de Autonomía de Berg":
+                                return responses.stream()
+                                                .mapToInt(response -> Integer.parseInt(response.getAnswer()))
+                                                .sum();
+                        case "Índice de Barthel":
+                                return responses.stream()
+                                                .mapToInt(response -> Integer.parseInt(response.getAnswer()))
+                                                .sum();
+                        case "Cuestionario de autoeficiencia frente al dolor":
+                                return responses.stream()
+                                                .mapToInt(response -> Integer.parseInt(response.getAnswer()))
+                                                .sum();
+                        case "Índice funcional de la extremidad superior":
+                                return responses.stream()
+                                                .mapToInt(response -> Integer.parseInt(response.getAnswer()))
+                                                .sum();
+                        case "Índice funcional de las extremidades inferiores":
+                                return responses.stream()
+                                                .mapToInt(response -> Integer.parseInt(response.getAnswer()))
+                                                .sum();
+                        default:
+                                return null;
+                }
+        }
 
         @Override
         public QuestionnaireResponseDto getQuestionnaire(Long questionnaireId) {
@@ -299,48 +343,48 @@ public void submitAnswerAndUpdateStatus(Long questionnaireId, Long patientId, Ma
 
         @Override
         public Map<String, List<QuestionnaireResponse>> getQuestionnaireResponsesGroupedByQuestion(Long questionnaireId,
-                Long patientId) {
-            // Validar que el cuestionario esté asignado al paciente
-            List<PatientQuestionnaire> patientQuestionnaires = patientQuestionnaireRepository
-                    .findByPatientIdAndQuestionnaireId(patientId, questionnaireId);
-        
-            if (patientQuestionnaires.isEmpty()) {
-                throw new RuntimeException("Cuestionario no asignado encontrado");
-            }
-        
-            // Obtener todas las respuestas del cuestionario para el paciente
-            List<QuestionnaireResponse> responses = questionnaireResponseRepository
-                    .findByPatientIdAndQuestionnaireIdOrderByCreatedAtAsc(patientId, questionnaireId);
-        
-            if (responses.isEmpty()) {
-                throw new RuntimeException("No se encontraron respuestas para el cuestionario");
-            }
-        
-            // Agrupar respuestas por pregunta
-            return responses.stream()
-                    .collect(Collectors.groupingBy(r -> "Pregunta ID: " + r.getQuestionId()));
+                        Long patientId) {
+                // Validar que el cuestionario esté asignado al paciente
+                List<PatientQuestionnaire> patientQuestionnaires = patientQuestionnaireRepository
+                                .findByPatientIdAndQuestionnaireId(patientId, questionnaireId);
+
+                if (patientQuestionnaires.isEmpty()) {
+                        throw new RuntimeException("Cuestionario no asignado encontrado");
+                }
+
+                // Obtener todas las respuestas del cuestionario para el paciente
+                List<QuestionnaireResponse> responses = questionnaireResponseRepository
+                                .findByPatientIdAndQuestionnaireIdOrderByCreatedAtAsc(patientId, questionnaireId);
+
+                if (responses.isEmpty()) {
+                        throw new RuntimeException("No se encontraron respuestas para el cuestionario");
+                }
+
+                // Agrupar respuestas por pregunta
+                return responses.stream()
+                                .collect(Collectors.groupingBy(r -> "Pregunta ID: " + r.getQuestionId()));
         }
-        
 
         @Override
-public List<QuestionnaireResponseDto> getCompletedQuestionnaires(Long patientId) {
-    // Obtener todos los cuestionarios completados
-    List<Questionnaire> completedQuestionnaires = patientQuestionnaireRepository
-            .findByPatientIdAndStatus(patientId, "completed")
-            .stream()
-            .map(PatientQuestionnaire::getQuestionnaire)
-            .collect(Collectors.toList());
+        public List<QuestionnaireResponseDto> getCompletedQuestionnaires(Long patientId) {
+                // Obtener todos los cuestionarios completados
+                List<Questionnaire> completedQuestionnaires = patientQuestionnaireRepository
+                                .findByPatientIdAndStatus(patientId, "completed")
+                                .stream()
+                                .map(PatientQuestionnaire::getQuestionnaire)
+                                .collect(Collectors.toList());
 
-    // Filtrar cuestionarios únicos por su ID
-    Map<Long, Questionnaire> uniqueQuestionnaires = completedQuestionnaires.stream()
-            .collect(Collectors.toMap(Questionnaire::getId, q -> q, (existing, replacement) -> existing));
+                // Filtrar cuestionarios únicos por su ID
+                Map<Long, Questionnaire> uniqueQuestionnaires = completedQuestionnaires.stream()
+                                .collect(Collectors.toMap(Questionnaire::getId, q -> q,
+                                                (existing, replacement) -> existing));
 
-    // Convertir los cuestionarios únicos a DTOs
-    return uniqueQuestionnaires.values().stream()
-            .map(q -> new QuestionnaireResponseDto(q.getId(), q.getTitle(), q.getDescription(), null))
-            .collect(Collectors.toList());
-}
-
+                // Convertir los cuestionarios únicos a DTOs
+                return uniqueQuestionnaires.values().stream()
+                                .map(q -> new QuestionnaireResponseDto(q.getId(), q.getTitle(), q.getDescription(),
+                                                null))
+                                .collect(Collectors.toList());
+        }
 
         @Override
         public Map<Date, List<CustomResponseDto>> getQuestionnaireResponsesGroupedByDate(Long questionnaireId,
@@ -375,49 +419,118 @@ public List<QuestionnaireResponseDto> getCompletedQuestionnaires(Long patientId)
         }
 
         @Override
-public List<Map<String, Object>> getScoresBySession(Long questionnaireId, Long patientId) {
-    // Obtener todas las respuestas del cuestionario para el paciente
-    List<QuestionnaireResponse> responses = questionnaireResponseRepository
-            .findByPatientIdAndQuestionnaireIdOrderByCreatedAt(patientId, questionnaireId);
+        public List<Map<String, Object>> getScoresBySession(Long questionnaireId, Long patientId) {
+                // Obtener todas las respuestas del cuestionario para el paciente
+                List<QuestionnaireResponse> responses = questionnaireResponseRepository
+                                .findByPatientIdAndQuestionnaireIdOrderByCreatedAt(patientId, questionnaireId);
 
-    if (responses.isEmpty()) {
-        throw new RuntimeException("No se encontraron respuestas para el cuestionario.");
-    }
+                if (responses.isEmpty()) {
+                        throw new RuntimeException("No se encontraron respuestas para el cuestionario.");
+                }
 
-    // Agrupar respuestas por día (ignorar tiempo)
-    Map<LocalDate, List<QuestionnaireResponse>> groupedByDate = responses.stream()
-            .collect(Collectors.groupingBy(response -> 
-                response.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-            ));
+                // Agrupar respuestas por día (ignorar tiempo)
+                Map<LocalDate, List<QuestionnaireResponse>> groupedByDate = responses.stream()
+                                .collect(Collectors.groupingBy(response -> response.getCreatedAt().toInstant()
+                                                .atZone(ZoneId.systemDefault()).toLocalDate()));
 
-    // Calcular un score por cada día
-    List<Map<String, Object>> scoresBySession = groupedByDate.entrySet().stream()
-            .map(entry -> {
-                LocalDate sessionDate = entry.getKey();
-                List<QuestionnaireResponse> sessionResponses = entry.getValue();
+                // Calcular un score por cada día
+                List<Map<String, Object>> scoresBySession = groupedByDate.entrySet().stream()
+                                .map(entry -> {
+                                        LocalDate sessionDate = entry.getKey();
+                                        List<QuestionnaireResponse> sessionResponses = entry.getValue();
 
-                // Calcular el score sumando las respuestas numéricas
-                int score = sessionResponses.stream()
-                        .mapToInt(response -> {
-                            try {
-                                return Integer.parseInt(response.getAnswer());
-                            } catch (NumberFormatException e) {
-                                return 0; // Ignorar respuestas no numéricas
-                            }
-                        })
-                        .sum();
+                                        // Calcular el score sumando las respuestas numéricas
+                                        int score = sessionResponses.stream()
+                                                        .mapToInt(response -> {
+                                                                try {
+                                                                        return Integer.parseInt(response.getAnswer());
+                                                                } catch (NumberFormatException e) {
+                                                                        return 0; // Ignorar respuestas no numéricas
+                                                                }
+                                                        })
+                                                        .sum();
 
-                // Crear un objeto con la fecha y el score
-                Map<String, Object> sessionScore = new HashMap<>();
-                sessionScore.put("date", sessionDate);
-                sessionScore.put("score", score);
-                return sessionScore;
-            })
-            .sorted(Comparator.comparing(a -> (LocalDate) a.get("date"))) // Ordenar por fecha
-            .collect(Collectors.toList());
+                                        // Crear un objeto con la fecha y el score
+                                        Map<String, Object> sessionScore = new HashMap<>();
+                                        sessionScore.put("date", sessionDate);
+                                        sessionScore.put("score", score);
+                                        return sessionScore;
+                                })
+                                .sorted(Comparator.comparing(a -> (LocalDate) a.get("date"))) // Ordenar por fecha
+                                .collect(Collectors.toList());
 
-    return scoresBySession;
-}
+                return scoresBySession;
+        }
 
+        // No borrar
+        @Override
+        public void addComments(Long questionnaireId, Long patientId, String comments) {
+                
+
+                List<PatientQuestionnaire> patientQuestionnaires = patientQuestionnaireRepository
+                                .findByPatientIdAndQuestionnaireId(patientId, questionnaireId);
+
+                if (patientQuestionnaires.isEmpty()) {
+                        throw new RuntimeException("Cuestionario no asignado encontrado");
+                }
+
+                // Tomar el primer elemento o manejar si hay lógica adicional para elegir uno
+                PatientQuestionnaire patientQuestionnaire = patientQuestionnaires.get(0);
+
+                // Agregar comentarios.
+                patientQuestionnaire.setComments(comments);
+
+                // Cambiar el estado a "completed".
+                patientQuestionnaire.setStatus("completed");
+                patientQuestionnaire.setUpdatedAt(new Date());
+                patientQuestionnaireRepository.save(patientQuestionnaire);
+        }
+        // No borrar
+        @Override
+        public List<Map<String, Object>> getQuestionnairesInProgressByPatient(Long patientId) {
+                // Obtener registros del paciente con estado "in_progress" y sin comentarios
+                List<PatientQuestionnaire> inProgressRecords = patientQuestionnaireRepository
+                                .findByPatientIdAndStatus(patientId, "in_progress")
+                                .stream()
+                                .filter(pq -> pq.getComments() == null || pq.getComments().isEmpty()) // Excluir
+                                                                                                      // cuestionarios
+                                                                                                      // con comentarios
+                                .collect(Collectors.toList());
+
+                if (inProgressRecords.isEmpty()) {
+                        throw new RuntimeException(
+                                        "No se encontraron cuestionarios en progreso para el paciente con ID: "
+                                                        + patientId);
+                }
+
+                // Mapear los datos a una estructura adecuada
+                return inProgressRecords.stream()
+                                .map(record -> {
+                                        Map<String, Object> result = new HashMap<>();
+                                        result.put("id", record.getId());
+                                        result.put("questionnaireId", record.getQuestionnaire().getId());
+                                        result.put("questionnaireTitle", record.getQuestionnaire().getTitle());
+                                        result.put("assignedAt", record.getAssignedAt());
+                                        result.put("updatedAt", record.getUpdatedAt());
+                                        result.put("score", record.getScore());
+                                        return result;
+                                })
+                                .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<Map<String, Object>> getQuestionnaireResponsesWithDetails(Long patientId, Long questionnaireId) {
+                // Utiliza la consulta nativa definida en el repositorio
+                List<Map<String, Object>> results = questionnaireResponseRepository.findResponsesWithDetails(patientId,
+                                questionnaireId);
+                System.out.println("results: " + results);
+
+                if (results.isEmpty()) {
+                        throw new RuntimeException(
+                                        "No se encontraron respuestas para el cuestionario con ID: " + questionnaireId);
+                }
+
+                return results; // Devuelve directamente los resultados
+        }
 
 }

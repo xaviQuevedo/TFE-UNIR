@@ -21,7 +21,7 @@ public class PatientQuestionnaire {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "patient_id", nullable =false)
+    @Column(name = "patient_id", nullable = false)
     private Long patientId;
 
     @Column(name = "physiotherapist_id", nullable = false)
@@ -43,5 +43,11 @@ public class PatientQuestionnaire {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt = new Date();
+
+    @Column(name = "comments")
+    private String comments;
+
+    @Column(name = "score")
+    private Integer score; // Puntuación calculada, puede ser nula si no aplica
 
 }

@@ -1,6 +1,7 @@
 package com.unir.tfm.gestion_cuestionarios.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -153,17 +154,60 @@ public class QuestionnaireController {
         }
     }
 
+    // Obtener scores por sesión
     @GetMapping("/{patientId}/questionnaires/{questionnaireId}/scores")
-public ResponseEntity<List<Map<String, Object>>> getScoresBySession(
-        @PathVariable Long patientId,
-        @PathVariable Long questionnaireId) {
-    try {
-        List<Map<String, Object>> scoresBySession = questionnaireService.getScoresBySession(questionnaireId, patientId);
-        return ResponseEntity.ok(scoresBySession);
-    } catch (RuntimeException e) {
-        log.error("Error al obtener scores por sesión: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    public ResponseEntity<List<Map<String, Object>>> getScoresBySession(
+            @PathVariable Long patientId,
+            @PathVariable Long questionnaireId) {
+        try {
+            List<Map<String, Object>> scoresBySession = questionnaireService.getScoresBySession(questionnaireId,
+                    patientId);
+            return ResponseEntity.ok(scoresBySession);
+        } catch (RuntimeException e) {
+            log.error("Error al obtener scores por sesión: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
-}
+
+    // agregar comentarios a los cuestionarios respondidos
+    @PostMapping("/{questionnaireId}/add-comments")
+    public ResponseEntity<String> addComments(
+            @PathVariable Long questionnaireId,
+            @RequestParam Long patientId,
+            @RequestBody String comments) {
+        try {
+            questionnaireService.addComments(questionnaireId, patientId, comments);
+            return ResponseEntity.ok("Comentarios añadidos y cuestionario marcado como completado.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{patientId}/in-progress")
+    public ResponseEntity<?> getQuestionnairesInProgressByPatient(@PathVariable Long patientId) {
+        try {
+            List<Map<String, Object>> inProgressQuestionnaires = questionnaireService
+                    .getQuestionnairesInProgressByPatient(patientId);
+            return ResponseEntity.ok(inProgressQuestionnaires);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "No se encontraron cuestionarios en progreso para el paciente.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+    }
+
+    // Endpoint para obtener las respuestas detalladas de un cuestionario
+    @GetMapping("/{patientId}/{questionnaireId}/detailed-responses")
+    public ResponseEntity<List<Map<String, Object>>> getDetailedQuestionnaireResponses(
+            @PathVariable Long patientId,
+            @PathVariable Long questionnaireId) {
+        try {
+            List<Map<String, Object>> responses = questionnaireService.getQuestionnaireResponsesWithDetails(patientId,
+                    questionnaireId);
+            return ResponseEntity.ok(responses);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
 
 }

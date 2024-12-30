@@ -1,0 +1,185 @@
+.view-assigned-patients-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(135deg, #6dd5ed, #ffffff); /* Azul claro a blanco */
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+}
+
+.view-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.view-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #1e88e5; /* Azul */
+    margin-bottom: 20px;
+}
+
+.select-dropdown {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #1e88e5;
+    font-size: 1rem;
+    background-color: #e3f2fd; /* Fondo azul claro */
+}
+
+.questionnaire-list {
+    list-style: none; /* Quitar los círculos */
+    padding: 0;
+}
+
+.questionnaire-item {
+    padding: 15px;
+    margin: 10px 0;
+    border: 1px solid #1e88e5;
+    border-radius: 5px;
+    background: #bbdefb; /* Azul pastel */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.questionnaire-item:hover {
+    background: #90caf9; /* Azul más vivo */
+}
+
+.questionnaire-item input[type="radio"] {
+    display: none; /* Oculta el input de tipo radio */
+}
+
+.score-badge {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.high-score {
+    background: #43a047; /* Verde */
+}
+
+.low-score {
+    background: #e53935; /* Rojo */
+}
+
+.questionnaire-date {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.responses-section {
+    margin-top: 20px;
+}
+
+.response-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas */
+    gap: 15px;
+    list-style: none; /* Quitar los círculos */
+    padding: 0;
+}
+
+.response-item {
+    background: #fff8e1; /* Amarillo suave */
+    padding: 10px;
+    border: 1px solid #ffb300;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.comments-textarea {
+    width: 100%;
+    height: 100px;
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #1e88e5;
+    border-radius: 5px;
+    font-size: 1rem;
+    resize: none;
+    background-color: #e3f2fd; /* Fondo azul claro */
+}
+
+.save-comments-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background: #1e88e5;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.save-comments-button:disabled {
+    background: #90caf9; /* Azul claro deshabilitado */
+    cursor: not-allowed;
+}
+
+.save-comments-button:hover:not(:disabled) {
+    background: #1565c0; /* Azul más oscuro */
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.modal-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #1e88e5;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.modal-button:hover {
+    background: #1565c0;
+}
+
+.error-message {
+    color: #e53935; /* Rojo */
+    font-weight: bold;
+}
+
+.loading-message {
+    font-size: 1.2rem;
+    color: #1e88e5; /* Azul */
+    text-align: center;
+}

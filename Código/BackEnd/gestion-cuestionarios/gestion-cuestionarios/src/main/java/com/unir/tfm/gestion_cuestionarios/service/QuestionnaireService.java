@@ -36,4 +36,10 @@ public interface QuestionnaireService {
 
     List<Map<String, Object>> getScoresBySession(Long questionnaireId, Long patientId);
 
+    void addComments(Long questionnaireId, Long patientId, String comments);
+
+    List<Map<String, Object>> getQuestionnairesInProgressByPatient(Long patientId);
+    List<Map<String, Object>> getQuestionnaireResponsesWithDetails(Long patientId, Long questionnaireId);
+    Integer calculateScore(Long questionnaireId, List<QuestionnaireResponse> responses);    
+
 }
