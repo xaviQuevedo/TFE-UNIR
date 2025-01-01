@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.unir.tfm.gestion_usuarios.data.UserRepository;
 import com.unir.tfm.gestion_usuarios.model.entity.User;
+import com.unir.tfm.gestion_usuarios.model.request.ChangePasswordRequest;
 import com.unir.tfm.gestion_usuarios.model.request.RegisterUserRequest;
 
 @Service
@@ -99,5 +100,28 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsersByRole(String role) {
         return userRepository.findByRole(role);
     }
+    @Override
+    public String changePassword(Long userId, ChangePasswordRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Validar contraseña actual
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Contraseña actual incorrecta");
+        }
+
+        // Validar que la nueva contraseña cumpla con los requisitos
+        if (request.getNewPassword().length() < 8) {
+            throw new RuntimeException("La nueva contraseña debe tener al menos 8 caracteres");
+        }
+
+        // Encriptar y actualizar la contraseña
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return "Contraseña actualizada correctamente";
+    }
+
+
 
 }

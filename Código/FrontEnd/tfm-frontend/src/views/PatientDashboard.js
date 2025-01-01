@@ -13,6 +13,10 @@ const PatientDashboard = () => {
     navigate("/patient/completed-questionnaires");
   };
 
+  const handleChangePassword = () => {
+    navigate("/patient/change-password");
+  };
+
   return (
     <div className="admin-dashboard-container">
       <div className="admin-dashboard-card">
@@ -30,6 +34,12 @@ const PatientDashboard = () => {
             onClick={handleViewCompletedQuestionnaires}
           >
             Ver progreso por cuestionario
+          </button>
+          <button
+            className="admin-dashboard-button"
+            onClick={handleChangePassword}
+          >
+            Cambiar Contraseña
           </button>
         </div>
       </div>

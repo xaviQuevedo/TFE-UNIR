@@ -17,6 +17,9 @@ const PhysiotherapistDashboard = () => {
   const handleClinicalHistory = () => {
     navigate("/physiotherapist/clinical-history");
   };
+  const handleChangePassword = () => {
+    navigate("/physiotherapist/change-password");
+  };
 
   return (
     <div className="physiotherapist-dashboard-container">
@@ -40,6 +43,9 @@ const PhysiotherapistDashboard = () => {
         </button>
         <button className="dashboard-button" onClick={handleClinicalHistory}>
           Ver historias clínicas
+        </button>
+        <button className="dashboard-button" onClick={handleChangePassword}>
+          Cambiar contraseña
         </button>
       </div>
     </div>

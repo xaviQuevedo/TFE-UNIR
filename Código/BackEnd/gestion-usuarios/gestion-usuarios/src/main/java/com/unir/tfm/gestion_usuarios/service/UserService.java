@@ -1,6 +1,7 @@
 package com.unir.tfm.gestion_usuarios.service;
 
 import com.unir.tfm.gestion_usuarios.model.entity.User;
+import com.unir.tfm.gestion_usuarios.model.request.ChangePasswordRequest;
 import com.unir.tfm.gestion_usuarios.model.request.RegisterUserRequest;
 
 import java.util.List;
@@ -24,5 +25,7 @@ public interface UserService {
     void deleteUser(Long id);
 
     List<User> getUsersByRole(String role);
+
+    String changePassword(Long userId, ChangePasswordRequest request);
 
 }

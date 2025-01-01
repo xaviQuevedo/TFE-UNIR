@@ -1,7 +1,9 @@
 package com.unir.tfm.gestion_usuarios.controller;
 
 import com.unir.tfm.gestion_usuarios.model.request.RegisterUserRequest;
+import com.unir.tfm.gestion_usuarios.model.response.ChangePasswordResponse;
 import com.unir.tfm.gestion_usuarios.model.entity.User;
+import com.unir.tfm.gestion_usuarios.model.request.ChangePasswordRequest;
 import com.unir.tfm.gestion_usuarios.model.request.LoginRequest;
 import com.unir.tfm.gestion_usuarios.service.UserService;
 import com.unir.tfm.gestion_usuarios.util.JwtUtil;
@@ -42,14 +44,6 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-
-    /*
-     * @GetMapping("/{id}")
-     * public ResponseEntity<Boolean> userExists(@PathVariable Long id) {
-     * 
-     * return ResponseEntity.ok(userService.existById(id));
-     * }
-     */
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
@@ -96,6 +90,18 @@ public class UserController {
         }
         System.out.println("userr" + users);
         return ResponseEntity.ok(users);
+    }
+
+    @PutMapping("/{userId}/change-password")
+    public ResponseEntity<ChangePasswordResponse> changePassword(
+            @PathVariable Long userId,
+            @RequestBody ChangePasswordRequest request) {
+        try {
+            String message = userService.changePassword(userId, request);
+            return ResponseEntity.ok(new ChangePasswordResponse(message));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(new ChangePasswordResponse(e.getMessage()));
+        }
     }
 
 }
