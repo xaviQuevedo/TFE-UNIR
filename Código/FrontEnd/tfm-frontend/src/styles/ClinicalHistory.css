@@ -1,0 +1,61 @@
+.clinical-history-dashboard {
+  padding: 20px;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+}
+
+.dashboard-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3f51b5;
+  margin-bottom: 20px;
+}
+
+.loading-message,
+.error-message,
+.no-patients-message {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.error-message {
+  color: #f44336;
+}
+
+.patient-list {
+  list-style: none;
+  padding: 0;
+}
+
+.patient-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.generate-pdf-button {
+  background: #4caf50;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.generate-pdf-button:hover {
+  background: #388e3c;
+}
+
+.generate-pdf-button:disabled {
+  background: #bdbdbd;
+  cursor: not-allowed;
+}

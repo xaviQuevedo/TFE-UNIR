@@ -16,6 +16,8 @@ import PatientProgress from "../components/patient/PatientProgress";
 import CompletedQuestionnaires from "../components/patient/CompletedQuestionnaires";
 import QuestionnaireResponses from "../components/patient/QuestionnaireResponses";
 import ViewAssignedPatients from "../components/physiotherapist/ViewAssignedPatients";
+import Statistics from "../components/physiotherapist/Statistics";
+import ClinicalHistory from "../components/physiotherapist/ClinicalHistory";
 //import Register from "../views/Register";
 //import Questionnaires from "../views/Questionnaires";
 //import Users from "../views/Users";
@@ -33,6 +35,8 @@ const Routes = () => {
         <Route path="/pyshiotherapist/dashboard" element={<PhysiotherapistDashboard/>} />
         <Route path="/physiotherapist/assign-questionnaire" element={<AssignQuestionnaire />} />
         <Route path="/physiotherapist/view-assigned-patients" element={<ViewAssignedPatients />} />
+        <Route path="/physiotherapist/statistics" element={<Statistics />} />
+        <Route path="/physiotherapist/clinical-history" element={<ClinicalHistory />} />
 
 
         <Route path="/patient/dashboard" element={<PatientDasboard />} />

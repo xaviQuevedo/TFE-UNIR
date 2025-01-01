@@ -22,7 +22,7 @@ import com.unir.tfm.gestion_cuestionarios.model.request.AssignQuestionnaireReque
 import com.unir.tfm.gestion_cuestionarios.model.response.CustomResponseDto;
 import com.unir.tfm.gestion_cuestionarios.model.response.QuestionnaireResponseDto;
 import com.unir.tfm.gestion_cuestionarios.model.response.ResponseDto;
-import com.unir.tfm.gestion_cuestionarios.service.QuestionnaireService;
+import com.unir.tfm.gestion_cuestionarios.service.Questionnarie.QuestionnaireService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -210,4 +210,33 @@ public class QuestionnaireController {
         }
     }
 
+    @GetMapping("/statistics")
+    public ResponseEntity<Map<String, Object>> getStatistics(@RequestParam Long physiotherapistId) {
+        try {
+            Map<String, Object> stats = questionnaireService.getStatisticsForPhysiotherapist(physiotherapistId);
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Error al obtener estadísticas generales"));
+        }
+    }
+
+    @GetMapping("/completed-by-patient")
+    public ResponseEntity<List<Map<String, Object>>> getCompletedQuestionnairesByPatient(@RequestParam Long physiotherapistId) {
+        try {
+            List<Map<String, Object>> stats = questionnaireService.getCompletedQuestionnairesByPatientForPhysiotherapist(physiotherapistId);
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(List.of(Map.of("error", "Error al obtener estadísticas de cuestionarios completados por paciente")));
+        }
+    }
+
+    @GetMapping("/completion-rates")
+    public ResponseEntity<Map<String, Object>> getCompletionRatesByPatient(@RequestParam Long physiotherapistId) {
+        try {
+            Map<String, Object> stats = questionnaireService.getCompletionRatesByPatientForPhysiotherapist(physiotherapistId);
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Error al obtener tasas de completados por paciente"));
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.unir.tfm.gestion_cuestionarios.service;
+package com.unir.tfm.gestion_cuestionarios.service.Questionnarie;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -465,7 +465,6 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         // No borrar
         @Override
         public void addComments(Long questionnaireId, Long patientId, String comments) {
-                
 
                 List<PatientQuestionnaire> patientQuestionnaires = patientQuestionnaireRepository
                                 .findByPatientIdAndQuestionnaireId(patientId, questionnaireId);
@@ -485,6 +484,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
                 patientQuestionnaire.setUpdatedAt(new Date());
                 patientQuestionnaireRepository.save(patientQuestionnaire);
         }
+
         // No borrar
         @Override
         public List<Map<String, Object>> getQuestionnairesInProgressByPatient(Long patientId) {
@@ -518,6 +518,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
                                 .collect(Collectors.toList());
         }
 
+        // No borrar
         @Override
         public List<Map<String, Object>> getQuestionnaireResponsesWithDetails(Long patientId, Long questionnaireId) {
                 // Utiliza la consulta nativa definida en el repositorio
@@ -532,5 +533,64 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
                 return results; // Devuelve directamente los resultados
         }
+
+        @Override
+        public Map<String, Object> getStatisticsForPhysiotherapist(Long physiotherapistId) {
+            long totalPatients = patientQuestionnaireRepository.countDistinctPatientsByPhysiotherapist(physiotherapistId);
+            long totalCompleted = patientQuestionnaireRepository.countByStatusAndPhysiotherapist("completed", physiotherapistId);
+            long totalInProgress = patientQuestionnaireRepository.countByStatusAndPhysiotherapist("in_progress", physiotherapistId);
+            long totalPending = patientQuestionnaireRepository.countByStatusAndPhysiotherapist("pending", physiotherapistId);
+    
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("totalPatients", totalPatients);
+            stats.put("totalCompleted", totalCompleted);
+            stats.put("totalInProgress", totalInProgress);
+            stats.put("totalPending", totalPending);
+            stats.put("completionRate",
+                    totalCompleted / (double) (totalCompleted + totalInProgress + totalPending) * 100);
+    
+            return stats;
+        }
+    
+        @Override
+        public List<Map<String, Object>> getCompletedQuestionnairesByPatientForPhysiotherapist(Long physiotherapistId) {
+            return patientQuestionnaireRepository.getCompletedQuestionnairesByPatientForPhysiotherapist(physiotherapistId);
+        }
+    
+        @Override
+public Map<String, Object> getCompletionRatesByPatientForPhysiotherapist(Long physiotherapistId) {
+    // Obtener los cuestionarios completados y pendientes por paciente
+    List<Map<String, Object>> completedByPatient = patientQuestionnaireRepository
+            .getCompletedQuestionnairesByPatientForPhysiotherapist(physiotherapistId);
+
+    List<Map<String, Object>> pendingByPatient = patientQuestionnaireRepository
+            .getPendingQuestionnairesByPatientForPhysiotherapist(physiotherapistId);
+
+    // Crear un mapa para almacenar las tasas
+    Map<Long, Long> pendingMap = pendingByPatient.stream()
+            .collect(Collectors.toMap(
+                    record -> ((Number) record.get("patientId")).longValue(),
+                    record -> ((Number) record.get("pendingCount")).longValue()
+            ));
+
+    Map<String, Object> rates = new HashMap<>();
+
+    for (Map<String, Object> record : completedByPatient) {
+        Long patientId = ((Number) record.get("patientId")).longValue();
+        Long completedCount = ((Number) record.get("completedCount")).longValue();
+
+        // Obtener el número de pendientes para el paciente, si no hay, asumir 0
+        Long pendingCount = pendingMap.getOrDefault(patientId, 0L);
+
+        // Calcular la tasa de completado
+        long total = completedCount + pendingCount;
+        double completionRate = total > 0 ? (completedCount / (double) total) * 100 : 0.0;
+
+        rates.put("Patient " + patientId, completionRate);
+    }
+
+    return rates;
+}
+
 
 }

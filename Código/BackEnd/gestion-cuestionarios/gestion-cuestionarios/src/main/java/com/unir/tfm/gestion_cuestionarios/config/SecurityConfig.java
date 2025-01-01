@@ -30,6 +30,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/questionnaires/**").permitAll()
+                        .requestMatchers("/clinical-history/**").permitAll()
                         .anyRequest().authenticated() // Requiere autenticación para el resto de los endpoints
                 )
                 .httpBasic().disable(); // Usar autenticación HTTP básica

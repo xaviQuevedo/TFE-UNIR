@@ -88,6 +88,7 @@ const useViewAssignedPatients = () => {
       );
 
       setResponses(response.data);
+      console.log(response.data);
     } catch (err) {
       setError("Error al cargar las respuestas del cuestionario.");
     } finally {

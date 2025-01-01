@@ -11,6 +11,12 @@ const PhysiotherapistDashboard = () => {
   const handleListCompletedQuestionnaire = () => {
     navigate("/physiotherapist/view-assigned-patients");
   };
+  const handleStatistics = () => {
+    navigate("/physiotherapist/statistics");
+  };
+  const handleClinicalHistory = () => {
+    navigate("/physiotherapist/clinical-history");
+  };
 
   return (
     <div className="physiotherapist-dashboard-container">
@@ -22,10 +28,18 @@ const PhysiotherapistDashboard = () => {
         >
           Asignar cuestionario
         </button>
-        <button 
-        className="dashboard-button"
-        onClick={handleListCompletedQuestionnaire}>
+        <button
+          className="dashboard-button"
+          onClick={handleListCompletedQuestionnaire}
+        >
           Ver pacientes y respuestas de los cuestionarios
+        </button>
+
+        <button className="dashboard-button" onClick={handleStatistics}>
+          Ver estadísticas
+        </button>
+        <button className="dashboard-button" onClick={handleClinicalHistory}>
+          Ver historias clínicas
         </button>
       </div>
     </div>
