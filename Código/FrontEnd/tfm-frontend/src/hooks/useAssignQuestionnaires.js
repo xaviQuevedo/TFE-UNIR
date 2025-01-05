@@ -63,7 +63,6 @@ useEffect(() => {
         }
       );
 
-      console.log("Datos recibidos del backend (cuestionarios disponibles):", response.data); // Log temporal
       setQuestionnaires(response.data);
       setLoading(false);
     } catch (err) {

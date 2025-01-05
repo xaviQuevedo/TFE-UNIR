@@ -18,7 +18,6 @@ const useAssignPatients = () => {
         const response = await physiotherapistService.get("/assignments/physiotherapists", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Fisioterapeutas recibidos:", response.data); // Log de fisioterapeutas
         setPhysiotherapists(response.data);
         setLoading(false);
       } catch (error) {
@@ -40,7 +39,6 @@ const useAssignPatients = () => {
         `/assignments/unassigned-patients?physiotherapistId=${physiotherapistId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Pacientes no asignados recibidos:", response.data); // Log de pacientes
       setPatients(response.data);
       setLoading(false);
     } catch (error) {
@@ -74,14 +72,12 @@ const useAssignPatients = () => {
         physiotherapistId: selectedPhysiotherapist,
         patientIds: selectedPatients,
       };
-      console.log("Datos enviados para la asignación:", payload); // Log del payload
 
-      const response = await physiotherapistService.post(
+      await physiotherapistService.post(
         "/assignments/assign",
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Respuesta de asignación:", response.data); // Log de la respuesta
 
       alert("Pacientes asignados correctamente.");
       setSelectedPhysiotherapist("");

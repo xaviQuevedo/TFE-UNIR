@@ -59,10 +59,9 @@ const useAnswerQuestionnaire = () => {
 
       const payload = { responses: formattedResponses };
 
-      console.log("Enviando respuestas con payload:", payload);
 
       // Realizar la solicitud al endpoint correcto del backend
-      const response = await patientService.post(
+       await patientService.post(
         `/patients/${questionnaireId}/submit-responses?patientId=${patientId}`,
         payload,
         {
@@ -70,7 +69,6 @@ const useAnswerQuestionnaire = () => {
         }
       );
 
-      console.log("Respuesta del backend:", response);
       setSuccess("Respuestas enviadas correctamente.");
       alert(
         "Respuestas enviadas correctamente. Será redirigido a los cuestionarios pendientes."

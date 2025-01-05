@@ -14,7 +14,6 @@ const useStatistics = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const physiotherapistId = localStorage.getItem("id");
-        console.log(physiotherapistId);
 
         if (!physiotherapistId) {
           setError("No se encontró el ID del fisioterapeuta.");

@@ -13,11 +13,6 @@ const useQuestionnaireResponses = (patientId, questionnaireId) => {
         setError(null);
         const token = localStorage.getItem("token");
 
-        console.log(
-          "Fetching responses for:",
-          `Patient ID: ${patientId}, Questionnaire ID: ${questionnaireId}`
-        );
-
         const response = await questionnaireService.get(
           `questionnaires/${patientId}/questionnaires/${questionnaireId}/scores`,
           {
@@ -25,7 +20,6 @@ const useQuestionnaireResponses = (patientId, questionnaireId) => {
           }
         );
 
-        console.log("Backend Response Data:", response.data); // Log de la respuesta del backend
         setResponses(response.data);
         setLoading(false);
       } catch (err) {

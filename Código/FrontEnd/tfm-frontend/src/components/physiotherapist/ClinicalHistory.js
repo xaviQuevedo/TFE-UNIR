@@ -22,7 +22,6 @@ const ClinicalHistory = () => {
         );
 
         setPatients(response.data);
-        console.log("Pacientes asignados:", response.data);
       } catch (err) {
         setError("Error al cargar los pacientes.");
       } finally {
