@@ -38,7 +38,7 @@ const ClinicalHistory = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await questionnaireService.get(`/clinical-history/${patient.user_id}/pdf`, {
+      const response = await questionnaireService.get(`/clinicals-histories/${patient.user_id}/pdf`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Manejo de archivos binarios
       });

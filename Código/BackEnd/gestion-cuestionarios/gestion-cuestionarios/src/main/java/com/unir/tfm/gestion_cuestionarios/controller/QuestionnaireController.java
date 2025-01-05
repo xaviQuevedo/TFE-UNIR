@@ -216,27 +216,33 @@ public class QuestionnaireController {
             Map<String, Object> stats = questionnaireService.getStatisticsForPhysiotherapist(physiotherapistId);
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", "Error al obtener estadísticas generales"));
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Error al obtener estadísticas generales"));
         }
     }
 
     @GetMapping("/completed-by-patient")
-    public ResponseEntity<List<Map<String, Object>>> getCompletedQuestionnairesByPatient(@RequestParam Long physiotherapistId) {
+    public ResponseEntity<List<Map<String, Object>>> getCompletedQuestionnairesByPatient(
+            @RequestParam Long physiotherapistId) {
         try {
-            List<Map<String, Object>> stats = questionnaireService.getCompletedQuestionnairesByPatientForPhysiotherapist(physiotherapistId);
+            List<Map<String, Object>> stats = questionnaireService
+                    .getCompletedQuestionnairesByPatientForPhysiotherapist(physiotherapistId);
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(List.of(Map.of("error", "Error al obtener estadísticas de cuestionarios completados por paciente")));
+            return ResponseEntity.internalServerError().body(List
+                    .of(Map.of("error", "Error al obtener estadísticas de cuestionarios completados por paciente")));
         }
     }
 
     @GetMapping("/completion-rates")
     public ResponseEntity<Map<String, Object>> getCompletionRatesByPatient(@RequestParam Long physiotherapistId) {
         try {
-            Map<String, Object> stats = questionnaireService.getCompletionRatesByPatientForPhysiotherapist(physiotherapistId);
+            Map<String, Object> stats = questionnaireService
+                    .getCompletionRatesByPatientForPhysiotherapist(physiotherapistId);
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", "Error al obtener tasas de completados por paciente"));
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Error al obtener tasas de completados por paciente"));
         }
     }
 }

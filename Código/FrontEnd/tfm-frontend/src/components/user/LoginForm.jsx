@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useLogin from "../../hooks/useLogin";
-import '../../styles/LoginForm.css';
+import "../../styles/LoginForm.css";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -12,12 +12,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const role = await login({ email, password });
-    if (role === 'admin') {
-      navigate('/admin/dashboard');
-    } else if (role === 'patient') {
-      navigate('/patient/dashboard');
-    } else if (role === 'physiotherapist') {
-      navigate('/pyshiotherapist/dashboard');
+    if (role === "admin") {
+      navigate("/admin/dashboard");
+    } else if (role === "patient") {
+      navigate("/patient/dashboard");
+    } else if (role === "physiotherapist") {
+      navigate("/pyshiotherapist/dashboard");
     }
   };
 

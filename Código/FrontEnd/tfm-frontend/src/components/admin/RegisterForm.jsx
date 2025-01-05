@@ -3,16 +3,24 @@ import useRegister from "../../hooks/useRegister";
 import "../../styles/RegisterForm.css";
 
 const RegisterForm = () => {
-  const { register, loading, showConfirmation, handleRedirect } =
-    useRegister();
+  const { register, loading, showConfirmation, handleRedirect } = useRegister();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [role, setRole] = React.useState("patient");
   const [name, setName] = React.useState("");
   const [last_name, setLastName] = React.useState("");
+  const [error, setError] = React.useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validar que todos los campos estén llenos
+    if (!email || !password || !name || !last_name || !role) {
+      setError("Todos los campos son obligatorios.");
+      return;
+    }
+
+    setError(""); // Limpiar el mensaje de error
     register({ email, password, role, name, last_name });
   };
 
@@ -57,6 +65,7 @@ const RegisterForm = () => {
             <option value="patient">Paciente</option>
             <option value="physiotherapist">Fisioterapeuta</option>
           </select>
+          {error && <p className="error-message">{error}</p>}
           <button className="register-button" type="submit" disabled={loading}>
             {loading ? "Registrando..." : "Registrar"}
           </button>

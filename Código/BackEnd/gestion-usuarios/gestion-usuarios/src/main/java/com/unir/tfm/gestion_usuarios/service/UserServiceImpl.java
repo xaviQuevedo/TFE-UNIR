@@ -100,6 +100,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsersByRole(String role) {
         return userRepository.findByRole(role);
     }
+
     @Override
     public String changePassword(Long userId, ChangePasswordRequest request) {
         User user = userRepository.findById(userId)
@@ -121,7 +122,5 @@ public class UserServiceImpl implements UserService {
 
         return "Contraseña actualizada correctamente";
     }
-
-
 
 }

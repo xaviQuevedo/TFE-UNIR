@@ -34,8 +34,7 @@ public class PatientController {
     public ResponseEntity<String> submitResponses(
             @RequestParam Long patientId,
             @PathVariable Long questionnaireId,
-            @RequestBody Map<String, List<ResponseDto>> requestBody) { // Captura el campo "responses"
-        System.out.println("Entre al metodo submitResponses");
+            @RequestBody Map<String, List<ResponseDto>> requestBody) {
 
         try {
             patientService.submitQuestionnaire(questionnaireId, patientId, requestBody);
@@ -73,19 +72,19 @@ public class PatientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
     @GetMapping("/{patientId}/questionnaires/{questionnaireId}/responses")
     public ResponseEntity<Map<String, List<QuestionnaireDto>>> getQuestionnaireResponses(
             @PathVariable Long patientId,
             @PathVariable Long questionnaireId) {
         try {
-            Map<String, List<QuestionnaireDto>> responses = patientService.getQuestionnaireResponses(patientId, questionnaireId);
+            Map<String, List<QuestionnaireDto>> responses = patientService.getQuestionnaireResponses(patientId,
+                    questionnaireId);
             return ResponseEntity.ok(responses);
         } catch (RuntimeException e) {
             log.error("Error fetching questionnaire responses: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-
 
 }

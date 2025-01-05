@@ -31,7 +31,6 @@ public class QuestionnaireClient {
     public List<QuestionnaireDto> getPendingQuestionnaires(Long patientId) {
         String url = BASE_URL + "/available/" + patientId;
         QuestionnaireDto[] response = restTemplate.getForObject(url, QuestionnaireDto[].class);
-        System.out.println("Response: " + response);
         return Arrays.asList(response);
     }
 

@@ -5,7 +5,7 @@ import { userService } from "../api/apiConfig";
 const useRegister = () => {
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false); // Estado para el mensaje de confirmación
+  const [showConfirmation, setShowConfirmation] = useState(false); 
   const navigate = useNavigate();
 
   const register = async ({ email, password, role, name, last_name }) => {
@@ -24,7 +24,7 @@ const useRegister = () => {
         }
       );
       setStatus("Usuario registrado exitosamente.");
-      setShowConfirmation(true); // Muestra el mensaje de confirmación
+      setShowConfirmation(true);
     } catch (error) {
       setStatus("Error al registrar usuario.");
     }

@@ -3,6 +3,7 @@ package com.unir.tfm.gestion_fisioterapeutas.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,24 +45,9 @@ public class AssignmentController {
 
     // EndPoint para obtener los pacientes asignados a un fisioterapeuta
     @GetMapping("/physiotherapist/{physiotherapistId}")
+    @PreAuthorize("hasRole('physiotherapist')")
     public ResponseEntity<List<User>> getAssignedPatients(@PathVariable Long physiotherapistId) {
         List<User> patients = assignmentService.getAssignedPatients(physiotherapistId);
-        return ResponseEntity.ok(patients);
-    }
-
-    @GetMapping("/exists")
-    public ResponseEntity<Boolean> existsAssignment(
-            @RequestParam Long patientId,
-            @RequestParam Long physiotherapistId) {
-        boolean exists = assignmentService.existsAssignment(patientId, physiotherapistId);
-        return ResponseEntity.ok(exists);
-    }
-
-    //
-    @GetMapping("/patients")
-    public ResponseEntity<List<?>> getPatients() {
-        List<?> patients = assignmentService.getPatients();
-        System.out.println("Patients: " + patients);
         return ResponseEntity.ok(patients);
     }
 
@@ -71,17 +57,8 @@ public class AssignmentController {
         return ResponseEntity.ok(physiotherapists);
     }
 
-    @GetMapping("/checkPhysiotherapists")
-    public ResponseEntity<?> ensureAllPhysiotherapistsHavePatients() {
-        try {
-            assignmentService.ensureAllPhysiotherapistsHavePatients();
-            return ResponseEntity.ok("All physiotherapists have assigned patients.");
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
-    }
-
     @GetMapping("/unassigned-patients")
+    @PreAuthorize("hasRole('patient')")
     public ResponseEntity<List<User>> getUnassignedPatients(@RequestParam Long physiotherapistId) {
         try {
             List<User> unassignedPatients = assignmentService.getUnassignedPatients(physiotherapistId);

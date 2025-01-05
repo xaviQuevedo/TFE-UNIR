@@ -9,14 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/clinical-history")
+@RequestMapping("/clinicals-histories")
 public class ClinicalHistoryController {
 
     @Autowired
     private ClinicalHistoryService clinicalHistoryService;
 
     /**
-     * Endpoint para generar y obtener la historia clínica de un paciente en formato JSON.
+     * Endpoint para generar y obtener la historia clínica de un paciente en formato
+     * JSON.
      *
      * @param patientId El ID del paciente.
      * @return La historia clínica del paciente.
@@ -34,7 +35,8 @@ public class ClinicalHistoryController {
     }
 
     /**
-     * Endpoint para generar y obtener la historia clínica de un paciente en formato PDF.
+     * Endpoint para generar y obtener la historia clínica de un paciente en formato
+     * PDF.
      *
      * @param patientId El ID del paciente.
      * @return El archivo PDF de la historia clínica.
@@ -44,11 +46,11 @@ public class ClinicalHistoryController {
         try {
             System.out.println("Generating clinical history PDF for patient ID: " + patientId);
             byte[] pdfContent = clinicalHistoryService.generateClinicalHistoryPdf(patientId);
-    
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDispositionFormData("attachment", "historia_clinica_" + patientId + ".pdf");
-    
+
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(pdfContent);
@@ -60,6 +62,5 @@ public class ClinicalHistoryController {
             return ResponseEntity.status(500).body(null);
         }
     }
-    
-    
+
 }

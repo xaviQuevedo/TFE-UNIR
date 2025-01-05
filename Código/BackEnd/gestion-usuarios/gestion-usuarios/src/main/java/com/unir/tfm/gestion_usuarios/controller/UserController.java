@@ -88,7 +88,6 @@ public class UserController {
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        System.out.println("userr" + users);
         return ResponseEntity.ok(users);
     }
 

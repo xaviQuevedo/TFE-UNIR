@@ -39,11 +39,15 @@ public interface QuestionnaireService {
     void addComments(Long questionnaireId, Long patientId, String comments);
 
     List<Map<String, Object>> getQuestionnairesInProgressByPatient(Long patientId);
+
     List<Map<String, Object>> getQuestionnaireResponsesWithDetails(Long patientId, Long questionnaireId);
-    Integer calculateScore(Long questionnaireId, List<QuestionnaireResponse> responses);    
+
+    Integer calculateScore(Long questionnaireId, List<QuestionnaireResponse> responses);
 
     Map<String, Object> getStatisticsForPhysiotherapist(Long physiotherapistId);
+
     List<Map<String, Object>> getCompletedQuestionnairesByPatientForPhysiotherapist(Long physiotherapistId);
-    Map<String, Object> getCompletionRatesByPatientForPhysiotherapist(Long physiotherapistId); 
+
+    Map<String, Object> getCompletionRatesByPatientForPhysiotherapist(Long physiotherapistId);
 
 }
