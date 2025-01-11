@@ -24,11 +24,12 @@ const useAssignQuestionnaires = () => {
         }
 
         const response = await physiotherapistService.get(
-          `/assignments/pysiotherapist/${physiotherapistId}`,
+          `/assignments/physiotherapist/${physiotherapistId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+        console.log(response.data);
 
         setPatients(response.data);
         setLoading(false);

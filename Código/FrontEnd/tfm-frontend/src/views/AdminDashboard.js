@@ -32,7 +32,7 @@ const AdminDashboard = () => {
             className="admin-dashboard-button"
             onClick={handleUpdateUser}
           >
-            Actualizar o eliminar usuario
+            Eliminar usuario
           </button>
           <button
             className="admin-dashboard-button"

@@ -24,29 +24,30 @@ const PhysiotherapistDashboard = () => {
   return (
     <div className="physiotherapist-dashboard-container">
       <div className="dashboard-card">
-        <h1 className="dashboard-title">Dashboard del Fisioterapeuta</h1>
-        <button
-          className="dashboard-button"
-          onClick={handleAssignQuestionnaire}
-        >
-          Asignar cuestionario
-        </button>
-        <button
-          className="dashboard-button"
-          onClick={handleListCompletedQuestionnaire}
-        >
-          Ver pacientes y respuestas de los cuestionarios
-        </button>
-
-        <button className="dashboard-button" onClick={handleStatistics}>
-          Ver estadísticas
-        </button>
-        <button className="dashboard-button" onClick={handleClinicalHistory}>
-          Ver historias clínicas
-        </button>
-        <button className="dashboard-button" onClick={handleChangePassword}>
-          Cambiar contraseña
-        </button>
+        <h1 className="dashboard-title">Panel del Fisioterapeuta</h1>
+        <div className="button-container">
+          <button
+            className="dashboard-button"
+            onClick={handleAssignQuestionnaire}
+          >
+            Asignar cuestionario
+          </button>
+          <button
+            className="dashboard-button"
+            onClick={handleListCompletedQuestionnaire}
+          >
+            Ver pacientes y respuestas de los cuestionarios
+          </button>
+          <button className="dashboard-button" onClick={handleStatistics}>
+            Ver estadísticas
+          </button>
+          <button className="dashboard-button" onClick={handleClinicalHistory}>
+            Ver historias clínicas
+          </button>
+          <button className="dashboard-button" onClick={handleChangePassword}>
+            Cambiar contraseña
+          </button>
+        </div>
       </div>
     </div>
   );

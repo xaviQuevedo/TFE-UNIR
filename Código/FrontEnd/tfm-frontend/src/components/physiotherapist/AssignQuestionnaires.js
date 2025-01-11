@@ -52,7 +52,7 @@ const AssignQuestionnaires = () => {
                 <option value="">-- Seleccionar --</option>
                 {patients.map((patient) => (
                   <option key={patient.user_id} value={patient.user_id}>
-                    {patient.name} {patient.lastname}
+                    {patient.name} {patient.last_name}
                   </option>
                 ))}
               </select>

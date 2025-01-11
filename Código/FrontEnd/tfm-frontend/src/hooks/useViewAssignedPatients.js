@@ -20,7 +20,7 @@ const useViewAssignedPatients = () => {
         const physiotherapistId = localStorage.getItem("id");
 
         const response = await physiotherapistService.get(
-          `/assignments/pysiotherapist/${physiotherapistId}`,
+          `/assignments/physiotherapist/${physiotherapistId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

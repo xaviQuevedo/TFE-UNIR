@@ -45,7 +45,6 @@ public class AssignmentController {
 
     // EndPoint para obtener los pacientes asignados a un fisioterapeuta
     @GetMapping("/physiotherapist/{physiotherapistId}")
-    @PreAuthorize("hasRole('physiotherapist')")
     public ResponseEntity<List<User>> getAssignedPatients(@PathVariable Long physiotherapistId) {
         List<User> patients = assignmentService.getAssignedPatients(physiotherapistId);
         return ResponseEntity.ok(patients);
