@@ -9,7 +9,7 @@ const useLogin = () => {
     setLoading(true);
     setStatus("");
     try {
-      const response = await userService.post("/users/login", {
+      const response = await userService.post("/users/sessions", {
         email,
         password,
       });

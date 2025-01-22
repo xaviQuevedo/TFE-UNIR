@@ -15,7 +15,7 @@ const ClinicalHistory = () => {
         const physiotherapistId = localStorage.getItem("id");
 
         const response = await physiotherapistService.get(
-          `/assignments/physiotherapist/${physiotherapistId}`,
+          `/assignments/${physiotherapistId}/patients`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -37,7 +37,7 @@ const ClinicalHistory = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await questionnaireService.get(`/clinicals-histories/${patient.user_id}/pdf`, {
+      const response = await questionnaireService.get(`/clinical-histories/${patient.user_id}`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Manejo de archivos binarios
       });

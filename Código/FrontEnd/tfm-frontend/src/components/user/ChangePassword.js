@@ -21,8 +21,8 @@ const ChangePassword = () => {
       const userId = localStorage.getItem("id"); // Suponiendo que el ID del usuario está en el localStorage
       const token = localStorage.getItem("token");
 
-      const response = await userService.put(
-        `/users/${userId}/change-password`,
+      const response = await userService.patch(
+        `/users/${userId}`,
         { currentPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );

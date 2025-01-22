@@ -29,13 +29,13 @@ public class QuestionnaireClient {
     private static final String BASE_URL = "http://localhost:8762/ms-gestion-cuestionarios/questionnaires";
 
     public List<QuestionnaireDto> getPendingQuestionnaires(Long patientId) {
-        String url = BASE_URL + "/available/" + patientId;
+        String url = BASE_URL + "/patients/" + patientId + "/available";
         QuestionnaireDto[] response = restTemplate.getForObject(url, QuestionnaireDto[].class);
         return Arrays.asList(response);
     }
 
     public void submitAnswers(Long questionnaireId, Long patientId, Map<String, List<ResponseDto>> responses) {
-        String url = BASE_URL + "/" + questionnaireId + "/submit?patientId=" + patientId;
+        String url = BASE_URL + "/" + questionnaireId + "/responses?patientId=" + patientId;
         log.info("Submitting answers to URL: {}", url);
         log.info("Payload: {}", responses);
         try {
@@ -67,7 +67,7 @@ public class QuestionnaireClient {
     }
 
     public List<QuestionnaireDto> getCompletedQuestionnaires(Long patientId) {
-        String url = BASE_URL + "/" + patientId + "/completed-questionnaires";
+        String url = BASE_URL + "/" + patientId + "/completed";
         log.info("Fetching completed questionnaires from URL: {}", url);
         try {
             ResponseEntity<QuestionnaireDto[]> response = restTemplate.getForEntity(url, QuestionnaireDto[].class);
@@ -82,7 +82,7 @@ public class QuestionnaireClient {
     }
 
     public Map<String, List<QuestionnaireDto>> getQuestionnaireResponses(Long patientId, Long questionnaireId) {
-        String url = BASE_URL + "/" + patientId + "/questionnaires/" + questionnaireId + "/responses";
+        String url = BASE_URL + "/patients/" + patientId + "/questionnaires/" + questionnaireId + "/responses";
         log.info("Fetching responses for patientId: {}, questionnaireId: {}", patientId, questionnaireId);
         try {
             @SuppressWarnings("rawtypes")

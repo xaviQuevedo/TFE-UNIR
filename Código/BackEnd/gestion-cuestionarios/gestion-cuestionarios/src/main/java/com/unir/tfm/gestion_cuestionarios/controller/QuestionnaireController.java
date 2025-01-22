@@ -36,7 +36,9 @@ public class QuestionnaireController {
 
     private static final Logger log = LoggerFactory.getLogger(QuestionnaireController.class);
 
-    @PostMapping("/assign")
+    // @PostMapping("/assign")
+    // Asignar cuestionarios a pacientes
+    @PostMapping("/assignments")
     public ResponseEntity<String> assignQuestionnaire(@RequestBody AssignQuestionnaireRequest request) {
         try {
             questionnaireService.assignQuestionnaire(request);
@@ -46,9 +48,11 @@ public class QuestionnaireController {
         }
     }
 
-    @PostMapping("/{questionnaireId}/submit")
+    // @PostMapping("/{questionnaireId}/submit")
+    // Guardar respuestas de un cuestionario
+    @PostMapping("/{id}/responses")
     public ResponseEntity<String> submitQuestionnaireResponses(
-            @PathVariable Long questionnaireId,
+            @PathVariable("id") Long questionnaireId,
             @RequestParam Long patientId,
             @RequestBody Map<String, List<ResponseDto>> responses) {
         try {
@@ -59,22 +63,29 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/{questionnaireId}")
-    public ResponseEntity<QuestionnaireResponseDto> getQuestionnaire(@PathVariable Long questionnaireId) {
+    // @GetMapping("/{questionnaireId}")
+    // Obtener un cuestionario por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<QuestionnaireResponseDto> getQuestionnaire(@PathVariable("id") Long questionnaireId) {
         return ResponseEntity.ok(questionnaireService.getQuestionnaire(questionnaireId));
     }
 
-    @GetMapping("/available/{patientId}")
-    public ResponseEntity<List<QuestionnaireResponseDto>> getAvailableQuestionnaires(@PathVariable Long patientId) {
+    // @GetMapping("/available/{patientId}")
+    // Obtener cuestionarios disponibles para un paciente
+    @GetMapping("/patients/{id}/available")
+    public ResponseEntity<List<QuestionnaireResponseDto>> getAvailableQuestionnaires(
+            @PathVariable("id") Long patientId) {
         List<QuestionnaireResponseDto> availableQuestionnaires = questionnaireService
                 .getAvailableQuestionnaires(patientId);
         return ResponseEntity.ok(availableQuestionnaires);
     }
 
-    @GetMapping("/not-assigned/{patientId}")
-    public ResponseEntity<List<QuestionnaireResponseDto>> getNotAssignedQuestionnaires(@PathVariable Long patientId) {
+    // @GetMapping("/not-assigned/{patientId}")
+    // Obtener cuestionarios no asignados a un paciente
+    @GetMapping("/patients/{id}/unassigned")
+    public ResponseEntity<List<QuestionnaireResponseDto>> getNotAssignedQuestionnaires(
+            @PathVariable("id") Long patientId) {
         try {
-            // Obtener cuestionarios no asignados
             List<QuestionnaireResponseDto> notAssignedQuestionnaires = questionnaireService
                     .getNotAssignedQuestionnaires(patientId);
             return ResponseEntity.ok(notAssignedQuestionnaires);
@@ -83,8 +94,11 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/{questionnaireId}/questions")
-    public ResponseEntity<QuestionnaireResponseDto> getQuestionnaireWithQuestions(@PathVariable Long questionnaireId) {
+    // @GetMapping("/{questionnaireId}/questions")
+    // Obtener las preguntas de un cuestionario
+    @GetMapping("/{id}/questions")
+    public ResponseEntity<QuestionnaireResponseDto> getQuestionnaireWithQuestions(
+            @PathVariable("id") Long questionnaireId) {
         try {
             QuestionnaireResponseDto questionnaire = questionnaireService
                     .getQuestionnaireWithQuestions(questionnaireId);
@@ -94,9 +108,12 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/{patientId}/progress/{questionnaireId}")
+    // @GetMapping("/{patientId}/progress/{questionnaireId}")
+    // Obtener progreso de un paciente en un cuestionario
+    @GetMapping("/patients/{id}/progress/{questionnaireId}")
+
     public ResponseEntity<Double> getPatientProgress(
-            @PathVariable Long patientId,
+            @PathVariable("id") Long patientId,
             @PathVariable Long questionnaireId) {
         try {
             double progress = questionnaireService.calculateProgress(patientId, questionnaireId);
@@ -106,9 +123,11 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/{patientId}/questionnaires/{questionnaireId}/responses")
+    // @GetMapping("/{patientId}/questionnaires/{questionnaireId}/responses")
+    // Obtener respuestas de un cuestionario por paciente
+    @GetMapping("/patients/{id}/questionnaires/{questionnaireId}/responses")
     public ResponseEntity<?> getQuestionnaireResponses(
-            @PathVariable Long patientId,
+            @PathVariable("id") Long patientId,
             @PathVariable Long questionnaireId) {
         try {
             // Lista de cuestionarios que miden por score
@@ -129,7 +148,9 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/{patientId}/completed-questionnaires")
+    // @GetMapping("/{patientId}/completed-questionnaires")
+    // Obtener cuestionarios completados por un paciente
+    @GetMapping("/patients/{id}/completed")
     public ResponseEntity<List<QuestionnaireResponseDto>> getCompletedQuestionnaires(@PathVariable Long patientId) {
         try {
             List<QuestionnaireResponseDto> completedQuestionnaires = questionnaireService
@@ -169,10 +190,11 @@ public class QuestionnaireController {
         }
     }
 
-    // agregar comentarios a los cuestionarios respondidos
-    @PostMapping("/{questionnaireId}/add-comments")
+    // @PostMapping("/{questionnaireId}/add-comments")
+    // Agregar comentarios a un cuestionario
+    @PostMapping("/{id}/comments")
     public ResponseEntity<String> addComments(
-            @PathVariable Long questionnaireId,
+            @PathVariable("id") Long questionnaireId,
             @RequestParam Long patientId,
             @RequestBody String comments) {
         try {
@@ -183,21 +205,65 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/{patientId}/in-progress")
-    public ResponseEntity<?> getQuestionnairesInProgressByPatient(@PathVariable Long patientId) {
+    /*
+     * @GetMapping("/{patientId}/in-progress")
+     * public ResponseEntity<?> getQuestionnairesInProgressByPatient(@PathVariable
+     * Long patientId) {
+     * try {
+     * List<Map<String, Object>> inProgressQuestionnaires = questionnaireService
+     * .getQuestionnairesInProgressByPatient(patientId);
+     * return ResponseEntity.ok(inProgressQuestionnaires);
+     * } catch (RuntimeException e) {
+     * Map<String, String> errorResponse = new HashMap<>();
+     * errorResponse.put("message",
+     * "No se encontraron cuestionarios en progreso para el paciente.");
+     * return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+     * }
+     * }
+     */
+
+    @GetMapping("/patients/{patientId}/questionnaires")
+    public ResponseEntity<?> getQuestionnairesByStatus(
+            @PathVariable Long patientId,
+            @RequestParam(required = false) String status) {
         try {
-            List<Map<String, Object>> inProgressQuestionnaires = questionnaireService
-                    .getQuestionnairesInProgressByPatient(patientId);
-            return ResponseEntity.ok(inProgressQuestionnaires);
+            if ("in-progress".equalsIgnoreCase(status)) {
+                List<Map<String, Object>> inProgressQuestionnaires = questionnaireService
+                        .getQuestionnairesInProgressByPatient(patientId);
+                return ResponseEntity.ok(inProgressQuestionnaires);
+            } else {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Estado no soportado o no especificado.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            }
         } catch (RuntimeException e) {
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", "No se encontraron cuestionarios en progreso para el paciente.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            errorResponse.put("message", "Error al recuperar cuestionarios para el paciente.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
-    // Endpoint para obtener las respuestas detalladas de un cuestionario
-    @GetMapping("/{patientId}/{questionnaireId}/detailed-responses")
+    /*
+     * // Endpoint para obtener las respuestas detalladas de un cuestionario
+     * 
+     * @GetMapping("/{patientId}/{questionnaireId}/detailed-responses")
+     * public ResponseEntity<List<Map<String, Object>>>
+     * getDetailedQuestionnaireResponses(
+     * 
+     * @PathVariable Long patientId,
+     * 
+     * @PathVariable Long questionnaireId) {
+     * try {
+     * List<Map<String, Object>> responses =
+     * questionnaireService.getQuestionnaireResponsesWithDetails(patientId,
+     * questionnaireId);
+     * return ResponseEntity.ok(responses);
+     * } catch (RuntimeException e) {
+     * return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+     * }
+     * }
+     */
+    @GetMapping("/patients/{patientId}/questionnaires/{questionnaireId}/responses/details")
     public ResponseEntity<List<Map<String, Object>>> getDetailedQuestionnaireResponses(
             @PathVariable Long patientId,
             @PathVariable Long questionnaireId) {
@@ -206,10 +272,13 @@ public class QuestionnaireController {
                     questionnaireId);
             return ResponseEntity.ok(responses);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Error al obtener respuestas detalladas del cuestionario.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+    // Obtener estadísticas de un fisioterapeuta
     @GetMapping("/statistics")
     public ResponseEntity<Map<String, Object>> getStatistics(@RequestParam Long physiotherapistId) {
         try {
@@ -221,28 +290,82 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/completed-by-patient")
+    /*
+     * @ GetMapping("/completed-by-patient")
+     * public ResponseEntity<List<Map<String, Object>>>
+     * getCompletedQuestionnairesByPatient(
+     * 
+     * @RequestParam Long physiotherapistId) {
+     * try {
+     * List<Map<String, Object>> stats = questionnaireService
+     * .getCompletedQuestionnairesByPatientForPhysiotherapist(physiotherapistId);
+     * return ResponseEntity.ok(stats);
+     * } catch (Exception e) {
+     * return ResponseEntity.internalServerError().body(List
+     * .of(Map.of("error",
+     * "Error al obtener estadísticas de cuestionarios completados por paciente")));
+     * }
+     * }
+     */
+
+    @GetMapping("/completed-questionnaires")
     public ResponseEntity<List<Map<String, Object>>> getCompletedQuestionnairesByPatient(
             @RequestParam Long physiotherapistId) {
         try {
+            // Obtener estadísticas desde el servicio
             List<Map<String, Object>> stats = questionnaireService
                     .getCompletedQuestionnairesByPatientForPhysiotherapist(physiotherapistId);
+
+            // Retornar la respuesta exitosa
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(List
-                    .of(Map.of("error", "Error al obtener estadísticas de cuestionarios completados por paciente")));
+            // Manejar excepciones y devolver un error estandarizado
+            Map<String, Object> errorResponse = Map.of(
+                    "error", "Error al obtener estadísticas de cuestionarios completados por paciente",
+                    "details", e.getMessage());
+            return ResponseEntity.internalServerError().body(List.of(errorResponse));
         }
     }
 
-    @GetMapping("/completion-rates")
-    public ResponseEntity<Map<String, Object>> getCompletionRatesByPatient(@RequestParam Long physiotherapistId) {
+    /*
+     * @GetMapping("/completion-rates")
+     * public ResponseEntity<Map<String, Object>>
+     * getCompletionRatesByPatient(@RequestParam Long physiotherapistId) {
+     * try {
+     * Map<String, Object> stats = questionnaireService
+     * .getCompletionRatesByPatientForPhysiotherapist(physiotherapistId);
+     * return ResponseEntity.ok(stats);
+     * } catch (Exception e) {
+     * return ResponseEntity.internalServerError()
+     * .body(Map.of("error", "Error al obtener tasas de completados por paciente"));
+     * }
+     * }
+     */
+    @GetMapping("/questionnaires/completion-rates/{physiotherapistId}")
+    public ResponseEntity<?> getCompletionRatesByPhysiotherapist(
+            @PathVariable Long physiotherapistId) {
         try {
+            // Llamar al servicio para obtener las tasas de finalización
             Map<String, Object> stats = questionnaireService
                     .getCompletionRatesByPatientForPhysiotherapist(physiotherapistId);
+
+            // Devolver la respuesta exitosa
             return ResponseEntity.ok(stats);
+        } catch (RuntimeException e) {
+            // Registrar el error y devolver detalles en la respuesta
+            log.error("Error al obtener tasas de finalización: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "error", "Error al obtener tasas de finalización",
+                            "details", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                    .body(Map.of("error", "Error al obtener tasas de completados por paciente"));
+            // Captura genérica para errores no esperados
+            log.error("Excepción inesperada: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "error", "Error inesperado al procesar la solicitud",
+                            "details", e.getMessage()));
         }
     }
+
 }

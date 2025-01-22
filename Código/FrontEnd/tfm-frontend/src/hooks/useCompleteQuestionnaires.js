@@ -15,7 +15,7 @@ const useCompleteQuestionnaires = () => {
         const token = localStorage.getItem("token");
         const patientId = localStorage.getItem("id");
         const response = await patientService.get(
-          `/patients/${patientId}/pending-questionnaires`,
+          `/patients/${patientId}/questionnaires/pending`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

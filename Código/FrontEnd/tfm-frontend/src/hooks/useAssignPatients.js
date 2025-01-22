@@ -36,7 +36,7 @@ const useAssignPatients = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await physiotherapistService.get(
-        `/assignments/unassigned-patients?physiotherapistId=${physiotherapistId}`,
+        `/assignments/physiotherapists/${physiotherapistId}/unassigned-patients`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPatients(response.data);
@@ -74,7 +74,7 @@ const useAssignPatients = () => {
       };
 
       await physiotherapistService.post(
-        "/assignments/assign",
+        "/assignments",
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );

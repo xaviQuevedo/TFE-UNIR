@@ -27,7 +27,10 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/login")
+    // Se crea un token cuando el usuario ingresan sus credenciales
+    // @PostMapping("/login")
+    @PostMapping("/sessions")
+
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
         var user = userService.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -52,11 +55,10 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/admin/register")
+    // @PostMapping("/admin/register")
+    @PostMapping
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<User> register(@RequestBody RegisterUserRequest request) {
-        System.out.println("Rol recibido: " + request.getRole());
-
         return ResponseEntity.ok(userService.registerUser(request));
     }
 
@@ -74,11 +76,22 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/admin/all")
+    // @GetMapping("/admin/all")
+    @GetMapping
+    /*
+     * @PreAuthorize("hasRole('admin')")
+     * public ResponseEntity<List<User>> getAllUsers() {
+     * List<User> users = userService.getAllUsers();
+     * return ResponseEntity.ok(users);
+     * }
+     */
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<User>> getAllUsers(@RequestParam(required = false) String role) {
+        if (role != null) {
+            List<User> users = userService.getUsersByRole(role);
+            return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
+        }
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/role/{role}")
@@ -91,7 +104,9 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PutMapping("/{userId}/change-password")
+    // @PutMapping("/{userId}/change-password")
+    @PatchMapping("/{userId}")
+
     public ResponseEntity<ChangePasswordResponse> changePassword(
             @PathVariable Long userId,
             @RequestBody ChangePasswordRequest request) {

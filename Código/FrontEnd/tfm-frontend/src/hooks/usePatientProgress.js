@@ -13,7 +13,7 @@ const usePatientProgress = (patientId, questionnaireId) => {
         setError(null);
         const token = localStorage.getItem("token");
         const response = await patientService.get(
-          `/${patientId}/progress/${questionnaireId}`,
+          `/patients/${patientId}/questionnaires/${questionnaireId}/progress`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

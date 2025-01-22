@@ -27,7 +27,7 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
 
     // EndPoint para asignar un paciente a un fisioterapeuta
-    @PostMapping("/assign")
+    @PostMapping
     public ResponseEntity<?> assignPatientToPhysiotherapist(@RequestBody AssignRequest request) {
         try {
             List<Assignment> assignments = assignmentService.assignPatientsToPhysiotherapist(
@@ -44,7 +44,7 @@ public class AssignmentController {
     }
 
     // EndPoint para obtener los pacientes asignados a un fisioterapeuta
-    @GetMapping("/physiotherapist/{physiotherapistId}")
+    @GetMapping("/physiotherapists/{physiotherapistId}/patients")
     public ResponseEntity<List<User>> getAssignedPatients(@PathVariable Long physiotherapistId) {
         List<User> patients = assignmentService.getAssignedPatients(physiotherapistId);
         return ResponseEntity.ok(patients);
@@ -56,7 +56,8 @@ public class AssignmentController {
         return ResponseEntity.ok(physiotherapists);
     }
 
-    @GetMapping("/unassigned-patients")
+    //@GetMapping("/unassigned-patients")
+    @GetMapping("/physiotherapists/{physiotherapistId}/unassigned-patients")
     @PreAuthorize("hasRole('patient')")
     public ResponseEntity<List<User>> getUnassignedPatients(@RequestParam Long physiotherapistId) {
         try {

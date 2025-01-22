@@ -24,15 +24,19 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
-    @GetMapping("/{patientId}/pending-questionnaires")
-    public ResponseEntity<List<QuestionnaireDto>> getPendingQuestionnaires(@PathVariable Long patientId) {
+    // @GetMapping("/{patientId}/pending-questionnaires")
+    // Obtener los cuestionarios pendientes de un paciente
+    @GetMapping("/{id}/questionnaires/pending")
+    public ResponseEntity<List<QuestionnaireDto>> getPendingQuestionnaires(@PathVariable("id") Long patientId) {
         List<QuestionnaireDto> questionnaires = patientService.getPendingQuestionnaires(patientId);
         return ResponseEntity.ok(questionnaires);
     }
 
-    @PostMapping("/{questionnaireId}/submit-responses")
+    // @PostMapping("/{questionnaireId}/responses")
+    // Enviar respuestas a un cuestionario
+    @PostMapping("/{id}/questionnaires/{questionnaireId}/responses")
     public ResponseEntity<String> submitResponses(
-            @RequestParam Long patientId,
+            @PathVariable("id") Long patientId,
             @PathVariable Long questionnaireId,
             @RequestBody Map<String, List<ResponseDto>> requestBody) {
 
@@ -46,10 +50,11 @@ public class PatientController {
         }
     }
 
-    // NO FUNCIONANDO-- BORRAR
-    @GetMapping("/{patientId}/progress/{questionnaireId}")
+    // @GetMapping("/{patientId}/progress/{questionnaireId}")
+    // Obtener el progreso de un cuestionario para un paciente
+    @GetMapping("/{id}/questionnaires/{questionnaireId}/progress")
     public ResponseEntity<Double> getPatientProgress(
-            @PathVariable Long patientId,
+            @PathVariable("id") Long patientId,
             @PathVariable Long questionnaireId) {
         try {
             Double progress = patientService.calculatePatientProgress(patientId, questionnaireId);
@@ -62,8 +67,10 @@ public class PatientController {
 
     }
 
-    @GetMapping("/{patientId}/completed-questionnaires")
-    public ResponseEntity<List<QuestionnaireDto>> getCompletedQuestionnaires(@PathVariable Long patientId) {
+    // @GetMapping("/{patientId}/completed-questionnaires")
+    // Obtener los cuestionarios completados de un paciente
+    @GetMapping("/{id}/questionnaires/completed")
+    public ResponseEntity<List<QuestionnaireDto>> getCompletedQuestionnaires(@PathVariable("id") Long patientId) {
         try {
             List<QuestionnaireDto> completedQuestionnaires = patientService.getCompletedQuestionnaires(patientId);
             return ResponseEntity.ok(completedQuestionnaires);
@@ -73,9 +80,11 @@ public class PatientController {
         }
     }
 
-    @GetMapping("/{patientId}/questionnaires/{questionnaireId}/responses")
+    // @GetMapping("/{patientId}/questionnaires/{questionnaireId}/responses")
+    // Obtener respuestas de un cuestionario específico de un paciente
+    @GetMapping("/{id}/questionnaires/{questionnaireId}/responses")
     public ResponseEntity<Map<String, List<QuestionnaireDto>>> getQuestionnaireResponses(
-            @PathVariable Long patientId,
+            @PathVariable("id") Long patientId,
             @PathVariable Long questionnaireId) {
         try {
             Map<String, List<QuestionnaireDto>> responses = patientService.getQuestionnaireResponses(patientId,

@@ -45,7 +45,6 @@ const useAssignQuestionnaires = () => {
   }, []);
 
   // Actualizar cuestionarios disponibles cuando cambie el paciente seleccionado
-  // Actualizar cuestionarios disponibles cuando cambie el paciente seleccionado
 useEffect(() => {
   const fetchAvailableQuestionnaires = async () => {
     if (!selectedPatient) {
@@ -58,7 +57,7 @@ useEffect(() => {
       const token = localStorage.getItem("token");
 
       const response = await questionnaireService.get(
-        `/questionnaires/not-assigned/${selectedPatient}`,
+        `/questionnaires/patients/${selectedPatient}/unassigned`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -88,7 +87,7 @@ useEffect(() => {
       const token = localStorage.getItem("token");
 
       await questionnaireService.post(
-        "/questionnaires/assign",
+        "/questionnaires/assignments",
         {
           patientId: selectedPatient,
           physiotherapistId: localStorage.getItem("id"),

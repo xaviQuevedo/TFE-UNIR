@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/clinicals-histories")
+@RequestMapping("/clinical-histories")
 public class ClinicalHistoryController {
 
     @Autowired
@@ -41,10 +41,9 @@ public class ClinicalHistoryController {
      * @param patientId El ID del paciente.
      * @return El archivo PDF de la historia clínica.
      */
-    @GetMapping("/{patientId}/pdf")
+    @GetMapping("/{patientId}")
     public ResponseEntity<byte[]> getClinicalHistoryPdf(@PathVariable Long patientId) {
         try {
-            System.out.println("Generating clinical history PDF for patient ID: " + patientId);
             byte[] pdfContent = clinicalHistoryService.generateClinicalHistoryPdf(patientId);
 
             HttpHeaders headers = new HttpHeaders();
@@ -55,10 +54,8 @@ public class ClinicalHistoryController {
                     .headers(headers)
                     .body(pdfContent);
         } catch (RuntimeException e) {
-            System.err.println("Runtime exception: " + e.getMessage());
             return ResponseEntity.status(404).body(null);
         } catch (Exception e) {
-            System.err.println("Exception: " + e.getMessage());
             return ResponseEntity.status(500).body(null);
         }
     }

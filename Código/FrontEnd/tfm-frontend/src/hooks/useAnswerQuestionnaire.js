@@ -59,10 +59,9 @@ const useAnswerQuestionnaire = () => {
 
       const payload = { responses: formattedResponses };
 
-
       // Realizar la solicitud al endpoint correcto del backend
-       await patientService.post(
-        `/patients/${questionnaireId}/submit-responses?patientId=${patientId}`,
+      await patientService.post(
+        `/patients/${patientId}/questionnaires/${questionnaireId}/responses`,
         payload,
         {
           headers: { Authorization: `Bearer ${token}` },

@@ -49,7 +49,7 @@ const useViewAssignedPatients = () => {
         const token = localStorage.getItem("token");
 
         const response = await questionnaireService.get(
-          `/questionnaires/${selectedPatient}/in-progress`,
+          `/questionnaires/patients/${selectedPatient}/questionnaires`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -81,7 +81,7 @@ const useViewAssignedPatients = () => {
       const token = localStorage.getItem("token");
 
       const response = await questionnaireService.get(
-        `/questionnaires/${selectedPatient}/${questionnaireId}/detailed-responses`,
+        `/questionnaires/patients/${selectedPatient}/questionnaires/${questionnaireId}/responses/details`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -101,7 +101,7 @@ const useViewAssignedPatients = () => {
       const token = localStorage.getItem("token");
 
       await questionnaireService.post(
-        `/questionnaires/${selectedQuestionnaire}/add-comments`,
+        `/questionnaires/${selectedQuestionnaire}/comments`,
         comments,
         {
           params: { patientId: selectedPatient },

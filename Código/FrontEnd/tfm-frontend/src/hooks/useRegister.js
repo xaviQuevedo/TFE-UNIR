@@ -15,7 +15,7 @@ const useRegister = () => {
       const token = localStorage.getItem("token");
 
       await userService.post(
-        "/users/admin/register",
+        "/users",
         { email, password, role, name, last_name },
         {
           headers: {
