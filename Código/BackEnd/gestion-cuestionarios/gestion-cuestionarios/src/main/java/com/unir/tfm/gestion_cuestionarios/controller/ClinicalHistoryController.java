@@ -1,6 +1,5 @@
 package com.unir.tfm.gestion_cuestionarios.controller;
 
-import com.unir.tfm.gestion_cuestionarios.model.response.ClinicalHistoryDto;
 import com.unir.tfm.gestion_cuestionarios.service.ClinicalHistory.ClinicalHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +21,7 @@ public class ClinicalHistoryController {
      * @param patientId El ID del paciente.
      * @return La historia clínica del paciente.
      */
-    @GetMapping("/{patientId}")
+   /*  @GetMapping("/{patientId}")
     public ResponseEntity<ClinicalHistoryDto> getClinicalHistory(@PathVariable Long patientId) {
         try {
             ClinicalHistoryDto clinicalHistory = clinicalHistoryService.generateClinicalHistory(patientId);
@@ -32,7 +31,7 @@ public class ClinicalHistoryController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }
-    }
+    } */
 
     /**
      * Endpoint para generar y obtener la historia clínica de un paciente en formato

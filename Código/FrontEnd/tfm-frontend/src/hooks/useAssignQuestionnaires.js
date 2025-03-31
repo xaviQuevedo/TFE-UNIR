@@ -24,7 +24,7 @@ const useAssignQuestionnaires = () => {
         }
 
         const response = await physiotherapistService.get(
-          `/assignments/physiotherapist/${physiotherapistId}`,
+          `/assignments/physiotherapists/${physiotherapistId}/patients`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

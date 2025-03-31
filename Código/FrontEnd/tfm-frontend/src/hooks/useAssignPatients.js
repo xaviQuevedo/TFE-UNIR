@@ -19,10 +19,13 @@ const useAssignPatients = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPhysiotherapists(response.data);
+        console.log("paciee");
         setLoading(false);
       } catch (error) {
         setError(error);
         setLoading(false);
+        console.log("paciee");
+
         alert("Error al cargar fisioterapeutas: " + error.message);
       }
     };

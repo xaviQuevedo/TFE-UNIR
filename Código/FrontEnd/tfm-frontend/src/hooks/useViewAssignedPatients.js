@@ -20,7 +20,7 @@ const useViewAssignedPatients = () => {
         const physiotherapistId = localStorage.getItem("id");
 
         const response = await physiotherapistService.get(
-          `/assignments/physiotherapist/${physiotherapistId}`,
+          `/assignments/physiotherapists/${physiotherapistId}/patients`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -49,7 +49,7 @@ const useViewAssignedPatients = () => {
         const token = localStorage.getItem("token");
 
         const response = await questionnaireService.get(
-          `/questionnaires/patients/${selectedPatient}/questionnaires`,
+          `/questionnaires/patients/${selectedPatient}/questionnaires?status=in-progress`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

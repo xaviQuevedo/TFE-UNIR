@@ -341,9 +341,10 @@ public class QuestionnaireController {
      * }
      * }
      */
-    @GetMapping("/questionnaires/completion-rates/{physiotherapistId}")
-    public ResponseEntity<?> getCompletionRatesByPhysiotherapist(
-            @PathVariable Long physiotherapistId) {
+    @GetMapping("/completion-rates")
+public ResponseEntity<?> getCompletionRatesByPhysiotherapist(
+        @RequestParam Long physiotherapistId) {
+
         try {
             // Llamar al servicio para obtener las tasas de finalización
             Map<String, Object> stats = questionnaireService
